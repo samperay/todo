@@ -1,0 +1,284 @@
+openapi: 3.1.0
+info:
+  title: Todo API
+  version: 0.1.0
+  description: >
+    Personal todos for an identified caller. Ownership is not a response
+    field. An id the caller does not own uses the same not-found response
+    as an unknown id.
+servers:
+  - url: /
+paths:
+  /api/v1/users:
+    post:
+      operationId: createUser
+      summary: Create a person and a one-time bearer token
+      responses:
+        "201":
+          description: Person created. The token is shown only in this response.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserCreated"
+  /api/v1/todos:
+    post:
+      operationId: createTodo
+      summary: Create an incomplete todo for the caller
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TodoCreate"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Todo"
+        "401":
+          $ref: "#/components/responses/Unauthenticated"
+        "422":
+          $ref: "#/components/responses/ValidationError"
+    get:
+      operationId: listTodos
+      summary: List the caller's todos, newest created_at first
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: The caller's todos. Empty array when they own none.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Todo"
+        "401":
+          $ref: "#/components/responses/Unauthenticated"
+  /api/v1/todos/{id}:
+    parameters:
+      - $ref: "#/components/parameters/TodoId"
+    get:
+      operationId: getTodo
+      summary: Retrieve one todo owned by the caller
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: The todo
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Todo"
+        "401":
+          $ref: "#/components/responses/Unauthenticated"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    patch:
+      operationId: updateTodo
+      summary: Change title, description, or both
+      description: >
+        Omitted fields stay unchanged. completed and id cannot be sent.
+        A null description clears it. The later committed patch wins when
+        two updates overlap; the caller is not warned.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TodoUpdate"
+      responses:
+        "200":
+          description: Updated todo
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Todo"
+        "401":
+          $ref: "#/components/responses/Unauthenticated"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "422":
+          $ref: "#/components/responses/ValidationError"
+    delete:
+      operationId: deleteTodo
+      summary: Permanently delete one todo owned by the caller
+      security:
+        - bearerAuth: []
+      responses:
+        "204":
+          description: Deleted. No body.
+        "401":
+          $ref: "#/components/responses/Unauthenticated"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /api/v1/todos/{id}/complete:
+    parameters:
+      - $ref: "#/components/parameters/TodoId"
+    post:
+      operationId: completeTodo
+      summary: Mark the caller's todo completed
+      description: >
+        Already completed is success and does not change updated_at.
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Todo, completed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Todo"
+        "401":
+          $ref: "#/components/responses/Unauthenticated"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /api/v1/todos/{id}/incomplete:
+    parameters:
+      - $ref: "#/components/parameters/TodoId"
+    post:
+      operationId: incompleteTodo
+      summary: Mark the caller's todo incomplete
+      description: >
+        Already incomplete is success and does not change updated_at.
+        This does not change id, title, description, or created_at.
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Todo, incomplete
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Todo"
+        "401":
+          $ref: "#/components/responses/Unauthenticated"
+        "404":
+          $ref: "#/components/responses/NotFound"
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+  parameters:
+    TodoId:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+  responses:
+    Unauthenticated:
+      description: Missing or unknown bearer token. No todo is stored or changed.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorBody"
+          example:
+            error:
+              code: unauthenticated
+              message: You must be identified.
+    NotFound:
+      description: >
+        No todo with this id is owned by the caller. Also used when the id
+        belongs to someone else. Nothing is created or changed.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorBody"
+          example:
+            error:
+              code: not_found
+              message: Todo not found
+    ValidationError:
+      description: Framework validation error. The stored todo is unchanged.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/HTTPValidationError"
+  schemas:
+    UserCreated:
+      type: object
+      required: [id, token]
+      properties:
+        id:
+          type: string
+          format: uuid
+        token:
+          type: string
+          description: Shown once. Send it as a bearer token on later calls.
+    Todo:
+      type: object
+      required: [id, title, description, completed, created_at, updated_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+        description:
+          type: string
+          nullable: true
+          maxLength: 2000
+        completed:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    TodoCreate:
+      type: object
+      additionalProperties: false
+      required: [title]
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+        description:
+          type: string
+          nullable: true
+          maxLength: 2000
+    TodoUpdate:
+      type: object
+      additionalProperties: false
+      minProperties: 1
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+        description:
+          type: string
+          nullable: true
+          maxLength: 2000
+    ErrorBody:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: object
+          required: [code, message]
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+    HTTPValidationError:
+      type: object
+      properties:
+        detail:
+          type: array
+          items:
+            type: object
