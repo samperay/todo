@@ -13,12 +13,8 @@ async def test_mark_incomplete_restores_an_open_todo(client) -> None:
     todo_id = created.json()["id"]
     await client.post(f"/api/v1/todos/{todo_id}/complete", headers=auth(token))
 
-    opened = await client.post(
-        f"/api/v1/todos/{todo_id}/incomplete", headers=auth(token)
-    )
-    again = await client.post(
-        f"/api/v1/todos/{todo_id}/incomplete", headers=auth(token)
-    )
+    opened = await client.post(f"/api/v1/todos/{todo_id}/incomplete", headers=auth(token))
+    again = await client.post(f"/api/v1/todos/{todo_id}/incomplete", headers=auth(token))
 
     assert opened.status_code == 200
     assert opened.json()["completed"] is False
@@ -36,12 +32,8 @@ async def test_incomplete_unknown_or_other_owner_is_not_found(client) -> None:
         "/api/v1/todos", headers=auth(owner_token), json={"title": "Buy milk"}
     )
     todo_id = created.json()["id"]
-    other = await client.post(
-        f"/api/v1/todos/{todo_id}/incomplete", headers=auth(other_token)
-    )
-    missing = await client.post(
-        f"/api/v1/todos/{uuid4()}/incomplete", headers=auth(owner_token)
-    )
+    other = await client.post(f"/api/v1/todos/{todo_id}/incomplete", headers=auth(other_token))
+    missing = await client.post(f"/api/v1/todos/{uuid4()}/incomplete", headers=auth(owner_token))
     anonymous = await client.post(f"/api/v1/todos/{todo_id}/incomplete")
     assert other.status_code == 404
     assert missing.status_code == 404

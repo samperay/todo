@@ -4,12 +4,8 @@ from tests.api_helpers import auth, create_person
 async def test_delete_is_permanent(client) -> None:
     _, owner_token = await create_person(client)
     _, other_token = await create_person(client)
-    mine = await client.post(
-        "/api/v1/todos", headers=auth(owner_token), json={"title": "Mine"}
-    )
-    theirs = await client.post(
-        "/api/v1/todos", headers=auth(other_token), json={"title": "Theirs"}
-    )
+    mine = await client.post("/api/v1/todos", headers=auth(owner_token), json={"title": "Mine"})
+    theirs = await client.post("/api/v1/todos", headers=auth(other_token), json={"title": "Theirs"})
     todo_id = mine.json()["id"]
 
     deleted = await client.delete(f"/api/v1/todos/{todo_id}", headers=auth(owner_token))
@@ -30,9 +26,7 @@ async def test_delete_is_permanent(client) -> None:
 async def test_delete_other_owner_or_anonymous_changes_nothing(client) -> None:
     _, owner_token = await create_person(client)
     _, other_token = await create_person(client)
-    created = await client.post(
-        "/api/v1/todos", headers=auth(owner_token), json={"title": "Mine"}
-    )
+    created = await client.post("/api/v1/todos", headers=auth(owner_token), json={"title": "Mine"})
     todo_id = created.json()["id"]
     other = await client.delete(f"/api/v1/todos/{todo_id}", headers=auth(other_token))
     anonymous = await client.delete(f"/api/v1/todos/{todo_id}")

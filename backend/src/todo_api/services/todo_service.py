@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from uuid import UUID, uuid4
 
 from todo_api.repositories.protocols import TodoRepository, TodoView
@@ -16,7 +16,7 @@ class TodoService:
         description: str | None,
         priority: str | None = None,
     ) -> TodoView:
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         todo = TodoView(
             id=uuid4(),
             title=title,
@@ -74,9 +74,7 @@ class TodoService:
         if not deleted:
             raise TodoNotFound()
 
-    async def _set_completed(
-        self, owner_id: UUID, todo_id: UUID, completed: bool
-    ) -> TodoView:
+    async def _set_completed(self, owner_id: UUID, todo_id: UUID, completed: bool) -> TodoView:
         todo = await self._repository.set_completed(owner_id, todo_id, completed)
         if todo is None:
             raise TodoNotFound()

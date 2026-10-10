@@ -1,6 +1,6 @@
+from tests.api_helpers import auth, create_person
 from todo_api.core.tokens import hash_token
 from todo_api.db.models import PersonModel
-from tests.api_helpers import auth, create_person
 
 
 async def test_create_user_returns_token_once_and_stores_a_hash(client) -> None:

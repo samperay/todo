@@ -1,3 +1,4 @@
+from datetime import UTC
 from uuid import UUID
 
 from todo_api.repositories.protocols import TodoView
@@ -35,9 +36,7 @@ class MemoryTodoRepository:
             return None
         new_title = title if set_title and title is not None else current.title
         new_description = description if set_description else current.description
-        new_priority = (
-            priority if set_priority and priority is not None else current.priority
-        )
+        new_priority = priority if set_priority and priority is not None else current.priority
         changed = (
             new_title != current.title
             or new_description != current.description
@@ -53,7 +52,7 @@ class MemoryTodoRepository:
             updated_at=current.updated_at,
         )
         if changed:
-            from datetime import datetime, timezone
+            from datetime import datetime
 
             updated = TodoView(
                 id=updated.id,
@@ -62,7 +61,7 @@ class MemoryTodoRepository:
                 completed=updated.completed,
                 priority=updated.priority,
                 created_at=updated.created_at,
-                updated_at=datetime.now(timezone.utc),
+                updated_at=datetime.now(UTC),
             )
         self.rows[(owner_id, todo_id)] = updated
         return updated
@@ -75,7 +74,7 @@ class MemoryTodoRepository:
             return None
         if current.completed == completed:
             return current
-        from datetime import datetime, timezone
+        from datetime import datetime
 
         updated = TodoView(
             id=current.id,
@@ -84,7 +83,7 @@ class MemoryTodoRepository:
             completed=completed,
             priority=current.priority,
             created_at=current.created_at,
-            updated_at=datetime.now(timezone.utc),
+            updated_at=datetime.now(UTC),
         )
         self.rows[(owner_id, todo_id)] = updated
         return updated

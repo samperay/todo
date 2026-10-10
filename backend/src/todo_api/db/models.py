@@ -25,9 +25,7 @@ class TodoModel(Base):
     )
 
     id: Mapped[uuid.UUID] = mapped_column(Uuid, primary_key=True)
-    owner_id: Mapped[uuid.UUID] = mapped_column(
-        Uuid, ForeignKey("users.id"), nullable=False
-    )
+    owner_id: Mapped[uuid.UUID] = mapped_column(Uuid, ForeignKey("users.id"), nullable=False)
     title: Mapped[str] = mapped_column(String(200), nullable=False)
     description: Mapped[str | None] = mapped_column(Text, nullable=True)
     completed: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
