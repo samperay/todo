@@ -8,7 +8,7 @@
 
 ## Summary
 
-Identified people manage their own todos: create, list, retrieve, partial update of title and description, mark completed, mark incomplete, and permanent delete. Another person's id is reported as not found. Overlapping writes do not return a conflict; the later committed write replaces the earlier one for the fields it sets.
+Identified people manage their own todos: create, list, retrieve, partial update of title, description, and priority, mark completed, mark incomplete, and permanent delete. Priority is `low`, `medium`, or `high`, and defaults to `medium`. Another person's id is reported as not found. Overlapping writes do not return a conflict; the later committed write replaces the earlier one for the fields it sets.
 
 The backend is a FastAPI service on Python 3.12 or newer. Route handlers stay thin and receive an identified user plus a service through dependency injection. Pydantic v2 schemas are the only request and response models. SQLAlchemy 2.x models are persistence-only. Services own the rules and do not mention the database engine. Repositories own database access. Local development and the default tests use SQLite. Startup creates the schema with `Base.metadata.create_all()`. There is no migration toolchain in this version.
 

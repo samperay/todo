@@ -80,11 +80,12 @@ paths:
           $ref: "#/components/responses/NotFound"
     patch:
       operationId: updateTodo
-      summary: Change title, description, or both
+      summary: Change title, description, priority, or any combination
       description: >
         Omitted fields stay unchanged. completed and id cannot be sent.
-        A null description clears it. The later committed patch wins when
-        two updates overlap; the caller is not warned.
+        A null description clears it. Priority, when sent, must be low,
+        medium, or high. The later committed patch wins when two updates
+        overlap; the caller is not warned.
       security:
         - bearerAuth: []
       requestBody:
@@ -216,7 +217,7 @@ components:
           description: Shown once. Send it as a bearer token on later calls.
     Todo:
       type: object
-      required: [id, title, description, completed, created_at, updated_at]
+      required: [id, title, description, completed, priority, created_at, updated_at]
       properties:
         id:
           type: string
@@ -231,6 +232,8 @@ components:
           maxLength: 2000
         completed:
           type: boolean
+        priority:
+          $ref: "#/components/schemas/Priority"
         created_at:
           type: string
           format: date-time
@@ -250,6 +253,9 @@ components:
           type: string
           nullable: true
           maxLength: 2000
+        priority:
+          $ref: "#/components/schemas/Priority"
+          description: Omitted values are stored as medium.
     TodoUpdate:
       type: object
       additionalProperties: false
@@ -263,6 +269,11 @@ components:
           type: string
           nullable: true
           maxLength: 2000
+        priority:
+          $ref: "#/components/schemas/Priority"
+    Priority:
+      type: string
+      enum: [low, medium, high]
     ErrorBody:
       type: object
       required: [error]

@@ -58,16 +58,16 @@ curl -s -X POST http://127.0.0.1:8000/api/v1/users
 
 Use person A's token as `TOKEN`.
 
-1. **Create.** `POST /api/v1/todos` with `{"title":"Buy milk","description":"1 liter"}` and `Authorization: Bearer $TOKEN` returns 201. `completed` is false. `created_at` equals `updated_at`. The body has `id`, `title`, `description`, `completed`, `created_at`, and `updated_at`, and no owner field.
-2. **Title only.** `POST /api/v1/todos` with `{"title":"Walk"}` returns 201 and `description` is null.
+1. **Create.** `POST /api/v1/todos` with `{"title":"Buy milk","description":"1 liter"}` and `Authorization: Bearer $TOKEN` returns 201. `completed` is false. `priority` is `medium`. `created_at` equals `updated_at`. The body has `id`, `title`, `description`, `completed`, `priority`, `created_at`, and `updated_at`, and no owner field.
+2. **Title only.** `POST /api/v1/todos` with `{"title":"Walk"}` returns 201, `description` is null, and `priority` is `medium`. `{"title":"Walk","priority":"high"}` stores `high`. `{"title":"Walk","priority":"urgent"}` returns 422 and stores nothing.
 3. **Reject title.** Missing title, `"   "`, or a 201-character title returns 422. A following list does not include a new row.
 4. **Reject description.** A description longer than 2,000 characters returns 422.
 5. **List.** `GET /api/v1/todos` returns only A's todos, newest first.
 6. **Retrieve.** `GET /api/v1/todos/{id}` returns that todo.
-7. **Update.** `PATCH /api/v1/todos/{id}` with `{"title":"Buy oat milk"}` leaves `description` and `completed` unchanged and moves `updated_at`.
+7. **Update.** `PATCH /api/v1/todos/{id}` with `{"title":"Buy oat milk"}` leaves `description`, `priority`, and `completed` unchanged and moves `updated_at`. `{"priority":"low"}` changes only priority. `{"priority":"urgent"}` returns 422 and leaves the todo unchanged.
 8. **Clear description.** `PATCH` with `{"description":null}` stores no description.
 9. **Complete.** `POST /api/v1/todos/{id}/complete` sets `completed` to true. Calling it again returns 200 and does not change `updated_at`. The todo remains in the list.
-10. **Incomplete.** `POST /api/v1/todos/{id}/incomplete` sets `completed` to false and keeps `id`, `title`, `description`, and `created_at`. Calling it again changes nothing.
+10. **Incomplete.** `POST /api/v1/todos/{id}/incomplete` sets `completed` to false and keeps `id`, `title`, `description`, `priority`, and `created_at`. Calling it again changes nothing.
 11. **Other person.** Person B's token on A's id for retrieve, patch, complete, incomplete, and delete returns 404 `Todo not found`. A's list still contains the todo. B's list does not.
 12. **Delete.** A's `DELETE /api/v1/todos/{id}` returns 204. A second delete, and a later get, return 404. The id is not issued again.
 13. **No token.** Any todo call without `Authorization` returns 401 `You must be identified.` and does not change stored todos.

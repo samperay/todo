@@ -28,12 +28,14 @@ An identified person adds a todo by supplying a title and, when they have more d
 
 **Acceptance Scenarios**:
 
-1. **Given** the user is adding a todo, **When** they provide a title and a description, **Then** a new todo is stored with that title and description, completed set to incomplete, a unique id, and created_at and updated_at set to the time of creation.
-2. **Given** the user is adding a todo, **When** they provide a title and omit the description, **Then** the todo is stored as incomplete with no description.
+1. **Given** the user is adding a todo, **When** they provide a title and a description, **Then** a new todo is stored with that title and description, completed set to incomplete, priority set to medium when omitted, a unique id, and created_at and updated_at set to the time of creation.
+2. **Given** the user is adding a todo, **When** they provide a title and omit the description, **Then** the todo is stored as incomplete with no description and priority medium.
 3. **Given** the user is adding a todo, **When** they omit the title or provide only whitespace, **Then** no todo is stored and the user is told that a title is required.
 4. **Given** the user is adding a todo, **When** the title is longer than 200 characters or the description is longer than 2,000 characters, **Then** no todo is stored and the user is told which limit was exceeded.
 5. **Given** the person is not identified, **When** they try to create a todo, **Then** nothing is stored and they are told they must be identified.
 6. **Given** person A created a todo, **When** person B lists or retrieves todos, **Then** person B does not see person A's todo.
+7. **Given** the user is adding a todo, **When** they set priority to low, medium, or high, **Then** the stored todo uses that priority.
+8. **Given** the user is adding a todo, **When** they set priority to any other value, **Then** no todo is stored and they are told the priority is invalid.
 
 ---
 
@@ -47,7 +49,7 @@ An identified person views every todo they own, including completed ones.
 
 **Acceptance Scenarios**:
 
-1. **Given** an identified person owns one or more todos, **When** they list todos, **Then** every todo they own is returned once with id, title, description, completed, created_at, and updated_at, and no one else's todos are included.
+1. **Given** an identified person owns one or more todos, **When** they list todos, **Then** every todo they own is returned once with id, title, description, completed, priority, created_at, and updated_at, and no one else's todos are included.
 2. **Given** an identified person owns no todos, **When** they list todos, **Then** the result is an empty collection even if other people have todos.
 3. **Given** an identified person's todos were created at different times, **When** they list todos, **Then** their todos are ordered newest first by created_at.
 4. **Given** the person is not identified, **When** they list todos, **Then** nothing is returned and they are told they must be identified.
@@ -64,7 +66,7 @@ A person marks an existing todo complete. The todo stays in the collection and s
 
 **Acceptance Scenarios**:
 
-1. **Given** an incomplete todo exists, **When** the user marks it completed, **Then** completed becomes true, title, description, id, and created_at stay the same, and updated_at becomes the time of completion.
+1. **Given** an incomplete todo exists, **When** the user marks it completed, **Then** completed becomes true, title, description, priority, id, and created_at stay the same, and updated_at becomes the time of completion.
 2. **Given** a todo is already completed, **When** the user marks it completed again, **Then** it stays completed and no field changes.
 3. **Given** no todo the person owns has the requested id, including when that id belongs to someone else, **When** the user marks it completed, **Then** the user is told the todo does not exist and nothing is stored.
 4. **Given** the person is not identified, **When** they mark a todo completed, **Then** nothing changes and they are told they must be identified.
@@ -81,7 +83,7 @@ A person opens one todo using its identifier and sees its current details.
 
 **Acceptance Scenarios**:
 
-1. **Given** a todo exists, **When** the user retrieves it by its id, **Then** they receive that todo’s id, title, description, completed, created_at, and updated_at.
+1. **Given** a todo exists, **When** the user retrieves it by its id, **Then** they receive that todo’s id, title, description, completed, priority, created_at, and updated_at.
 2. **Given** no todo the person owns has the requested id, including when that id belongs to someone else, **When** the user retrieves it, **Then** they are told the todo does not exist, and no todo is created or changed.
 3. **Given** the person is not identified, **When** they retrieve a todo, **Then** nothing is returned and they are told they must be identified.
 
@@ -89,7 +91,7 @@ A person opens one todo using its identifier and sees its current details.
 
 ### User Story 5 - Update a todo (Priority: P2)
 
-A person changes the title, the description, or both on an existing todo. This action does not change whether the todo is completed.
+A person changes the title, the description, the priority, or any combination of those on an existing todo. This action does not change whether the todo is completed.
 
 **Why this priority**: Wording often needs correction after creation, but the collection is already usable with the original text.
 
@@ -98,13 +100,15 @@ A person changes the title, the description, or both on an existing todo. This a
 **Acceptance Scenarios**:
 
 1. **Given** a todo exists, **When** the user updates its title and description, **Then** those fields change, completed and created_at stay the same, and updated_at becomes the time of the update.
-2. **Given** a todo exists, **When** the user updates only the title, **Then** the description is unchanged.
+2. **Given** a todo exists, **When** the user updates only the title, **Then** the description and priority are unchanged.
 3. **Given** a todo exists, **When** the user updates only the description, including clearing it, **Then** the title is unchanged and the description becomes the supplied value, or no description when cleared.
 4. **Given** a todo exists, **When** the user sets the title to empty or whitespace, **Then** the todo is unchanged and the user is told that a title is required.
 5. **Given** a todo exists, **When** the user sets a title longer than 200 characters or a description longer than 2,000 characters, **Then** the todo is unchanged and the user is told which limit was exceeded.
 6. **Given** no todo the person owns has the requested id, including when that id belongs to someone else, **When** the user updates it, **Then** they are told the todo does not exist and nothing is stored.
 7. **Given** the person is not identified, **When** they update a todo, **Then** nothing changes and they are told they must be identified.
 8. **Given** two overlapping changes to the same todo, **When** the later change sets the title to "Buy milk" and the description to "2 liters" after an earlier change had set the title to "Buy oat milk", **Then** the stored todo has title "Buy milk" and description "2 liters", the earlier title is not kept, and the person is not warned.
+9. **Given** a todo exists, **When** the user updates only the priority to low, medium, or high, **Then** that priority is stored, title and description stay unchanged, and updated_at becomes the time of the update.
+10. **Given** a todo exists, **When** the user sets priority to any other value, **Then** the todo is unchanged and they are told the priority is invalid.
 
 ---
 
@@ -136,7 +140,7 @@ An identified person marks their own completed todo incomplete again, without ch
 
 **Acceptance Scenarios**:
 
-1. **Given** an identified person owns a completed todo, **When** they mark it incomplete, **Then** completed becomes false, id, title, description, and created_at stay the same, updated_at becomes the time of the change, and later retrieve and list show it as incomplete.
+1. **Given** an identified person owns a completed todo, **When** they mark it incomplete, **Then** completed becomes false, id, title, description, priority, and created_at stay the same, updated_at becomes the time of the change, and later retrieve and list show it as incomplete.
 2. **Given** the person owns an incomplete todo, **When** they mark it incomplete again, **Then** no field changes.
 3. **Given** the id is unknown or belongs to someone else, **When** the person marks it incomplete, **Then** they are told the todo does not exist, nothing changes, and the response does not reveal that another person owns that id.
 4. **Given** the person is not identified, **When** they mark a todo incomplete, **Then** nothing changes and they are told they must be identified.
@@ -147,6 +151,8 @@ An identified person marks their own completed todo incomplete again, without ch
 
 - A title that is missing, only whitespace, or longer than 200 characters is rejected on create and on update, and stored todos stay as they were.
 - A description longer than 2,000 characters is rejected on create and on update, and stored todos stay as they were.
+- Priority accepts only low, medium, and high. Any other value is rejected on create and on update, and stored todos stay as they were.
+- Omitting priority on create stores medium. Omitting priority on update leaves the stored priority unchanged.
 - A description may be omitted on create, left unchanged on a title-only update, or cleared on update. All three mean the todo has no description.
 - Two todos may share the same title. The id is the only identity.
 - The user cannot choose or change the id. The system assigns it at creation and keeps it until the todo is deleted.
@@ -159,7 +165,7 @@ An identified person marks their own completed todo incomplete again, without ch
 - Marking an already incomplete todo incomplete again does not change updated_at or any other field.
 - Marking a todo incomplete does not remove it from the list.
 - Deleting a todo is permanent. The same id is not reused, and the item cannot be restored.
-- created_at does not change after creation. updated_at changes only when title, description, or completed actually changes, and it is never earlier than created_at.
+- created_at does not change after creation. updated_at changes only when title, description, priority, or completed actually changes, and it is never earlier than created_at.
 - On creation, created_at and updated_at are the same moment.
 - If two changes to the same todo overlap, only fields the later request supplies change. For a field both requests set, the later successfully processed request wins. A field the later request omits keeps the value from the previous successful update. The person is not warned. A later change does not recreate a todo that was already deleted.
 
@@ -167,7 +173,7 @@ An identified person marks their own completed todo incomplete again, without ch
 
 ### Functional Requirements
 
-- **FR-001**: The system MUST let an identified person create a todo with a title and an optional description, and that todo MUST belong only to the person who created it.
+- **FR-001**: The system MUST let an identified person create a todo with a title, an optional description, and an optional priority, and that todo MUST belong only to the person who created it.
 - **FR-002**: The system MUST reject creation when the title is missing or contains only whitespace, and MUST NOT store a todo in that case.
 - **FR-003**: The system MUST store every new todo as incomplete.
 - **FR-004**: The system MUST assign each new todo a unique id that the user does not choose and cannot change.
@@ -177,7 +183,7 @@ An identified person marks their own completed todo incomplete again, without ch
 - **FR-008**: The system MUST order a todo list newest first by created_at.
 - **FR-009**: The system MUST let a user retrieve one todo by its id.
 - **FR-010**: The system MUST tell the person the todo does not exist when they retrieve, update, complete, mark incomplete, or delete an id they do not own, including an id that does not exist and an id owned by someone else, and MUST NOT create a todo or reveal that another person owns that id.
-- **FR-011**: The system MUST let a user change the title, the description, or both of an existing todo without changing its completed state or its id.
+- **FR-011**: The system MUST let a user change the title, the description, the priority, or any combination of those on an existing todo without changing its completed state or its id.
 - **FR-012**: The system MUST modify only fields the request explicitly supplies. Omitted fields MUST retain their stored values. A title-only update MUST leave the description unchanged, and a description-only update MUST leave the title unchanged.
 - **FR-013**: The system MUST reject an update that would leave the title missing or whitespace-only, and MUST leave the todo unchanged.
 - **FR-014**: The system MUST let a user clear a description so the todo has no description.
@@ -188,8 +194,8 @@ An identified person marks their own completed todo incomplete again, without ch
 - **FR-019**: The system MUST let a user permanently delete a todo by id so that later retrieve and list no longer include it.
 - **FR-020**: The system MUST leave every todo other than the deleted one unchanged.
 - **FR-021**: The system MUST NOT reuse the id of a deleted todo for a later todo.
-- **FR-022**: Every create, retrieve, list item, update result, completion result, and mark-incomplete result MUST include id, title, description, completed, created_at, and updated_at.
-- **FR-023**: The system MUST keep created_at unchanged after creation, and MUST set updated_at to the time of a change only when title, description, or completed actually changes.
+- **FR-022**: Every create, retrieve, list item, update result, completion result, and mark-incomplete result MUST include id, title, description, completed, priority, created_at, and updated_at.
+- **FR-023**: The system MUST keep created_at unchanged after creation, and MUST set updated_at to the time of a change only when title, description, priority, or completed actually changes.
 - **FR-024**: The system MUST keep stored todos available after the user leaves and returns, until each todo is deleted.
 - **FR-025**: The system MUST accept duplicate titles. Identity is the id, not the title.
 - **FR-026**: The system MUST reject a title longer than 200 characters on create and on update, leave stored todos unchanged, and tell the user the title limit was exceeded.
@@ -199,18 +205,20 @@ An identified person marks their own completed todo incomplete again, without ch
 - **FR-030**: The system MUST keep one person's todos unchanged when another person creates, updates, completes, marks incomplete, or deletes their own todos.
 - **FR-031**: The system MUST leave a todo unchanged when the owner marks an already incomplete todo incomplete again.
 - **FR-032**: When overlapping writes set the same field, the later successfully processed request MUST win for that field. Fields omitted by the later request MUST retain the value produced by previous successful updates. The system MUST NOT warn the person. A later change MUST NOT recreate a todo that has already been deleted.
+- **FR-033**: Priority MUST be one of low, medium, or high. A new todo whose priority is omitted MUST be stored as medium.
+- **FR-034**: The system MUST reject a priority other than low, medium, or high on create and on update, leave stored todos unchanged, and tell the user the priority is invalid.
 
 ### Key Entities *(include if feature involves data)*
 
 - **Person**: The domain entity for an identified user of the collection. The HTTP resource name for this entity is `users`. The same person sees the same todos when they return. This feature has no roles beyond that identity. How the person proves who they are is left for planning.
-- **Todo**: A single piece of work owned by exactly one Person. It has a stable id, a required title, an optional description, a completed flag that starts false, created_at for when it was added, and updated_at for the last time its title, description, or completed flag changed. Ownership is not one of the fields returned with the todo. Todos owned by different people are not visible to each other.
+- **Todo**: A single piece of work owned by exactly one Person. It has a stable id, a required title, an optional description, a completed flag that starts false, a priority of low, medium, or high that starts as medium, created_at for when it was added, and updated_at for the last time its title, description, priority, or completed flag changed. Ownership is not one of the fields returned with the todo. Todos owned by different people are not visible to each other.
 
 ## Success Criteria *(mandatory)*
 
 ### Measurable Outcomes
 
 - **SC-001**: A user can add a todo using only a title and then see that todo in the list, in a single pass, without any other required fields.
-- **SC-002**: For every todo created during a check, retrieve-by-id returns the same title, description, and completed state that were stored, in 100% of cases.
+- **SC-002**: For every todo created during a check, retrieve-by-id returns the same title, description, completed state, and priority that were stored, in 100% of cases.
 - **SC-003**: 100% of create and update attempts with a missing title, a whitespace-only title, a title over 200 characters, or a description over 2,000 characters are rejected, and the stored collection is unchanged by those attempts.
 - **SC-004**: After a user marks a todo completed, both retrieve and list show that todo as completed, and the todo is still present.
 - **SC-005**: After a user deletes a todo, it is absent from retrieve and list, a second delete of that same id reports that it does not exist, and every other todo is unchanged.
@@ -227,8 +235,8 @@ An identified person marks their own completed todo incomplete again, without ch
 - A person who is not identified is rejected on every action in this feature. Nothing is stored or changed.
 - A title must contain at least one non-whitespace character and must be at most 200 characters.
 - A description, when present, must be at most 2,000 characters. Omitting it, sending it empty, or clearing it all mean the todo has no description.
-- Update changes title and description only. The completed flag changes only when the owner marks the todo completed or marks it incomplete.
-- List returns that person's full collection, including completed todos. Search, filters (including hide-completed), pagination, sorting choices, due dates, priority, tags, subtasks, and bulk actions are out of scope.
+- Update changes title, description, and priority only. The completed flag changes only when the owner marks the todo completed or marks it incomplete. Marking complete or incomplete does not change priority.
+- List returns that person's full collection, including completed todos. Search, filters (including hide-completed), pagination, sorting choices, due dates, tags, subtasks, and bulk actions are out of scope. The list is not sorted by priority.
 - Unknown ids are reported as not found. Delete is not treated as success when the todo is already gone.
 - Overlapping changes apply only to fields the later request supplies. That later successful request wins on those fields. Omitted fields keep the stored value. The person is not warned. A change never brings back a deleted todo.
 - Timestamps are recorded in a form the user can read and compare. Exact display formatting is left for planning.

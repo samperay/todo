@@ -27,8 +27,9 @@ One piece of work owned by exactly one person.
 | title | string, not null, max 200 | Required on create. Optional on patch. | Must contain a non-whitespace character. Whitespace-only is rejected. |
 | description | text, nullable, max 2000 | Optional. `null` means none. | Omitted on create, empty, or whitespace-only is stored as null. Patch may set null to clear it. Omitted on patch leaves it unchanged. |
 | completed | boolean, not null, default false | Read-only except via complete and incomplete actions | Create always stores false. Patch cannot change it. |
+| priority | string, not null | Required on responses. Optional on create and patch. | Allowed values are `low`, `medium`, and `high`. Omitted on create stores `medium`. Omitted on patch leaves the stored value. Any other value is rejected. Complete and incomplete do not change it. |
 | created_at | UTC datetime, not null | Read-only | Set once at insert by the application. Never updated. |
-| updated_at | UTC datetime, not null | Read-only | Equal to `created_at` on insert. Set by the application only when title, description, or completed actually changes. |
+| updated_at | UTC datetime, not null | Read-only | Equal to `created_at` on insert. Set by the application only when title, description, priority, or completed actually changes. |
 
 Indexes:
 
@@ -67,5 +68,6 @@ These checks fail in Pydantic before the service runs, and the stored row is unc
 - Title longer than 200 characters
 - Description longer than 2,000 characters
 - Unknown fields, including `completed` and `id`, on create or patch
+- Priority other than `low`, `medium`, or `high` on create or patch
 
 Clearing a description uses JSON `null` on patch. That is valid and stores null.
