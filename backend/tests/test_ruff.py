@@ -1,5 +1,3 @@
-import os
-import sys
 
 
 def some_function():
