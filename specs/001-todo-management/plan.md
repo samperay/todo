@@ -87,6 +87,7 @@ backend/
 │       │   ├── errors.py
 │       │   └── todo_service.py
 │       ├── repositories/
+│       │   ├── user_repository.py
 │       │   └── todo_repository.py
 │       └── db/
 │           ├── session.py
@@ -98,7 +99,7 @@ backend/
     └── api/
 ```
 
-**Structure Decision**: Backend-only web service under `backend/`. There is no frontend in this feature. `schemas/` holds Pydantic models. `db/models.py` holds SQLAlchemy models. `db/schema.py` calls `Base.metadata.create_all()` and is the only schema initializer. `api/routes/` is the HTTP boundary. `services/` holds rules and imports neither the engine nor the models' query API. `repositories/` holds queries. `api/deps.py` is the only place that wires a session, repository, and service into a handler.
+**Structure Decision**: Backend-only web service under `backend/`. There is no frontend in this feature. `schemas/` holds Pydantic models. `db/models.py` holds SQLAlchemy models. `db/schema.py` calls `Base.metadata.create_all()` and is the only schema initializer. `api/routes/` is the HTTP boundary. `services/` holds rules and imports neither the engine nor the models' query API. `repositories/` holds queries. `user_repository.py` persists the Person entity. The HTTP resource name for that entity is `users`. `api/deps.py` is the only place that wires a session, repository, and service into a handler.
 
 ## Complexity Tracking
 

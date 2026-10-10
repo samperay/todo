@@ -161,7 +161,7 @@ An identified person marks their own completed todo incomplete again, without ch
 - Deleting a todo is permanent. The same id is not reused, and the item cannot be restored.
 - created_at does not change after creation. updated_at changes only when title, description, or completed actually changes, and it is never earlier than created_at.
 - On creation, created_at and updated_at are the same moment.
-- If two changes to the same todo overlap, the later stored change replaces the earlier one. The fields are not merged, and the person is not warned. A later change does not recreate a todo that was already deleted.
+- If two changes to the same todo overlap, only fields the later request supplies change. For a field both requests set, the later successfully processed request wins. A field the later request omits keeps the value from the previous successful update. The person is not warned. A later change does not recreate a todo that was already deleted.
 
 ## Requirements *(mandatory)*
 
@@ -178,7 +178,7 @@ An identified person marks their own completed todo incomplete again, without ch
 - **FR-009**: The system MUST let a user retrieve one todo by its id.
 - **FR-010**: The system MUST tell the person the todo does not exist when they retrieve, update, complete, mark incomplete, or delete an id they do not own, including an id that does not exist and an id owned by someone else, and MUST NOT create a todo or reveal that another person owns that id.
 - **FR-011**: The system MUST let a user change the title, the description, or both of an existing todo without changing its completed state or its id.
-- **FR-012**: The system MUST leave unspecified fields unchanged when a user updates only the title or only the description.
+- **FR-012**: The system MUST modify only fields the request explicitly supplies. Omitted fields MUST retain their stored values. A title-only update MUST leave the description unchanged, and a description-only update MUST leave the title unchanged.
 - **FR-013**: The system MUST reject an update that would leave the title missing or whitespace-only, and MUST leave the todo unchanged.
 - **FR-014**: The system MUST let a user clear a description so the todo has no description.
 - **FR-015**: The system MUST let a user mark an existing incomplete todo as completed.
@@ -198,11 +198,11 @@ An identified person marks their own completed todo incomplete again, without ch
 - **FR-029**: Each todo MUST belong to exactly one person, the person who created it, and that ownership MUST NOT change.
 - **FR-030**: The system MUST keep one person's todos unchanged when another person creates, updates, completes, marks incomplete, or deletes their own todos.
 - **FR-031**: The system MUST leave a todo unchanged when the owner marks an already incomplete todo incomplete again.
-- **FR-032**: When two changes to the same todo overlap, the system MUST keep the later stored change and discard the earlier change. It MUST NOT merge fields from both, and it MUST NOT warn the person. A later change MUST NOT recreate a todo that has already been deleted.
+- **FR-032**: When overlapping writes set the same field, the later successfully processed request MUST win for that field. Fields omitted by the later request MUST retain the value produced by previous successful updates. The system MUST NOT warn the person. A later change MUST NOT recreate a todo that has already been deleted.
 
 ### Key Entities *(include if feature involves data)*
 
-- **Person**: An identified user of the collection. The same person sees the same todos when they return. This feature has no roles beyond that identity. How the person proves who they are is left for planning.
+- **Person**: The domain entity for an identified user of the collection. The HTTP resource name for this entity is `users`. The same person sees the same todos when they return. This feature has no roles beyond that identity. How the person proves who they are is left for planning.
 - **Todo**: A single piece of work owned by exactly one Person. It has a stable id, a required title, an optional description, a completed flag that starts false, created_at for when it was added, and updated_at for the last time its title, description, or completed flag changed. Ownership is not one of the fields returned with the todo. Todos owned by different people are not visible to each other.
 
 ## Success Criteria *(mandatory)*
@@ -217,7 +217,7 @@ An identified person marks their own completed todo incomplete again, without ch
 - **SC-006**: A list of 100 todos owned by one person returns all 100 of that person's todos, each once, ordered newest first by created_at, and includes none owned by anyone else.
 - **SC-007**: An identified person who knows the field names can create, list, retrieve, update, complete, mark incomplete, and delete their own todo on the first attempt without additional guidance.
 - **SC-009**: After a person marks their own completed todo incomplete, retrieve and list show it incomplete with the same id, title, description, and created_at, in 100% of cases. Marking an already incomplete todo incomplete again leaves every field unchanged.
-- **SC-010**: When two overlapping changes are stored for one todo, the stored todo matches the later change in 100% of cases, the earlier change is not merged in, and the person receives no conflict warning.
+- **SC-010**: When two overlapping changes set the same field, the later successfully processed request wins that field in 100% of cases. A field the later request omits keeps the value from the previous successful update. The person receives no conflict warning.
 - **SC-008**: In a check with two identified people, neither person's list nor retrieve shows the other's todos, in 100% of cases. An action against the other person's id reports that the todo does not exist, and the owner's todo is unchanged.
 
 ## Assumptions
@@ -230,6 +230,6 @@ An identified person marks their own completed todo incomplete again, without ch
 - Update changes title and description only. The completed flag changes only when the owner marks the todo completed or marks it incomplete.
 - List returns that person's full collection, including completed todos. Search, filters (including hide-completed), pagination, sorting choices, due dates, priority, tags, subtasks, and bulk actions are out of scope.
 - Unknown ids are reported as not found. Delete is not treated as success when the todo is already gone.
-- Overlapping changes to a todo that still exists keep the later change in full. The earlier change is discarded, and the person is not warned. A change never brings back a deleted todo.
+- Overlapping changes apply only to fields the later request supplies. That later successful request wins on those fields. Omitted fields keep the stored value. The person is not warned. A change never brings back a deleted todo.
 - Timestamps are recorded in a form the user can read and compare. Exact display formatting is left for planning.
 - How the user invokes each action (screen, request, or command) is left for planning. This specification defines the behavior of each action, not the interface technology.
