@@ -60,3 +60,4 @@ pytest
 ```
 
 Tests use a temporary SQLite file. They do not need `DATABASE_URL`.
+# Branch protection test
