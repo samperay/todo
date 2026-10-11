@@ -24,9 +24,7 @@ async def test_later_fields_replace_earlier_ones_and_deleted_ids_stay_gone(
             set_description=True,
         )
         await service.delete(owner, created.id)
-        missing = await repository.update(
-            owner, created.id, title="Back", set_title=True
-        )
+        missing = await repository.update(owner, created.id, title="Back", set_title=True)
         await session.commit()
 
     assert later.title == "Buy milk"
@@ -42,12 +40,8 @@ async def test_priority_column_changes_only_when_supplied_and_different(
         owner = await SqlAlchemyUserRepository(session).create(hash_token("owner"))
         service = TodoService(SqlAlchemyTodoRepository(session))
         created = await service.create(owner, "Buy milk", "1 liter", priority="high")
-        renamed = await service.update(
-            owner, created.id, title="Buy oat milk", set_title=True
-        )
-        lowered = await service.update(
-            owner, created.id, priority="low", set_priority=True
-        )
+        renamed = await service.update(owner, created.id, title="Buy oat milk", set_title=True)
+        lowered = await service.update(owner, created.id, priority="low", set_priority=True)
         same = await service.update(owner, created.id, priority="low", set_priority=True)
         await session.commit()
 

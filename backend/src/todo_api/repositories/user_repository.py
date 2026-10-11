@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from uuid import UUID, uuid4
 
 from sqlalchemy import select
@@ -15,7 +15,7 @@ class SqlAlchemyUserRepository:
         person = PersonModel(
             id=uuid4(),
             token_hash=token_hash,
-            created_at=datetime.now(timezone.utc),
+            created_at=datetime.now(UTC),
         )
         self._session.add(person)
         await self._session.flush()

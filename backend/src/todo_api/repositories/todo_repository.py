@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from uuid import UUID
 
 from sqlalchemy import select
@@ -67,7 +67,7 @@ class SqlAlchemyTodoRepository:
             row.priority = priority
             changed = True
         if changed:
-            row.updated_at = datetime.now(timezone.utc)
+            row.updated_at = datetime.now(UTC)
         await self._session.flush()
         return _to_view(row)
 
@@ -79,7 +79,7 @@ class SqlAlchemyTodoRepository:
             return None
         if row.completed != completed:
             row.completed = completed
-            row.updated_at = datetime.now(timezone.utc)
+            row.updated_at = datetime.now(UTC)
             await self._session.flush()
         return _to_view(row)
 
@@ -103,8 +103,8 @@ class SqlAlchemyTodoRepository:
 
 def _as_utc(value: datetime) -> datetime:
     if value.tzinfo is None:
-        return value.replace(tzinfo=timezone.utc)
-    return value.astimezone(timezone.utc)
+        return value.replace(tzinfo=UTC)
+    return value.astimezone(UTC)
 
 
 def _to_view(row: TodoModel) -> TodoView:

@@ -1,8 +1,7 @@
+from dataclasses import dataclass
 from datetime import datetime
 from typing import Protocol
 from uuid import UUID
-
-from dataclasses import dataclass
 
 
 @dataclass(frozen=True)

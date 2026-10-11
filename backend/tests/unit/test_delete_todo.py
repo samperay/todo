@@ -2,9 +2,9 @@ from uuid import uuid4
 
 import pytest
 
+from tests.fakes import MemoryTodoRepository
 from todo_api.services.errors import TodoNotFound
 from todo_api.services.todo_service import TodoService
-from tests.fakes import MemoryTodoRepository
 
 
 async def test_delete_is_permanent_and_does_not_recreate() -> None:

@@ -2,9 +2,9 @@ from uuid import uuid4
 
 import pytest
 
+from tests.fakes import MemoryTodoRepository
 from todo_api.services.errors import TodoNotFound
 from todo_api.services.todo_service import TodoService
-from tests.fakes import MemoryTodoRepository
 
 
 async def test_partial_update_and_clear_description() -> None:
@@ -13,9 +13,7 @@ async def test_partial_update_and_clear_description() -> None:
     created = await service.create(owner, "Buy milk", "1 liter")
 
     renamed = await service.update(owner, created.id, title="Buy oat milk", set_title=True)
-    cleared = await service.update(
-        owner, created.id, description=None, set_description=True
-    )
+    cleared = await service.update(owner, created.id, description=None, set_description=True)
 
     assert renamed.description == "1 liter"
     assert renamed.completed is False

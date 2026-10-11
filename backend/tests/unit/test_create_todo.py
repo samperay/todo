@@ -1,7 +1,7 @@
 from uuid import uuid4
 
-from todo_api.services.todo_service import TodoService
 from tests.fakes import MemoryTodoRepository
+from todo_api.services.todo_service import TodoService
 
 
 async def test_create_is_incomplete_and_owned() -> None:

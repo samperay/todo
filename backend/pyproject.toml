@@ -10,7 +10,7 @@ dependencies = [
     "pydantic-settings>=2",
     "greenlet>=3",
     "sqlalchemy>=2",
-    "uvicorn>=0.32",
+    "uvicorn>=0.32"
 ]
 
 [project.optional-dependencies]
@@ -18,6 +18,9 @@ dev = [
     "httpx>=0.27",
     "pytest>=8",
     "pytest-asyncio>=0.24",
+    "ruff>=0.14",
+    "mypy>=1.18",
+    "pytest-cov>=6"
 ]
 
 [build-system]
@@ -33,3 +36,16 @@ asyncio_default_fixture_loop_scope = "function"
 testpaths = ["tests"]
 pythonpath = ["src", "."]
 addopts = "--import-mode=importlib"
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+
+[tool.ruff.lint]
+select = [
+    "E",
+    "F",
+    "I",
+    "B",
+    "UP",
+]

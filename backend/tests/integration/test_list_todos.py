@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from uuid import UUID, uuid4
 
 from todo_api.core.tokens import hash_token
@@ -8,7 +8,7 @@ from todo_api.repositories.user_repository import SqlAlchemyUserRepository
 
 
 async def test_list_orders_newest_first_and_excludes_other_owners(session_factory) -> None:
-    older = datetime(2026, 1, 1, tzinfo=timezone.utc)
+    older = datetime(2026, 1, 1, tzinfo=UTC)
     newer = older + timedelta(days=1)
     low_id = UUID(int=1)
     high_id = UUID(int=2)

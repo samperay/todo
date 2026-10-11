@@ -51,9 +51,7 @@ async def test_patch_priority_and_rejects_invalid_values(client) -> None:
     assert body["description"] == "1 liter"
 
     for payload in ({"priority": "urgent"}, {"priority": None}):
-        rejected = await client.patch(
-            f"/api/v1/todos/{todo_id}", headers=auth(token), json=payload
-        )
+        rejected = await client.patch(f"/api/v1/todos/{todo_id}", headers=auth(token), json=payload)
         assert rejected.status_code == 422, payload
     stored = await client.get(f"/api/v1/todos/{todo_id}", headers=auth(token))
     assert stored.json()["priority"] == "low"
@@ -62,14 +60,10 @@ async def test_patch_priority_and_rejects_invalid_values(client) -> None:
 
 async def test_patch_rejects_invalid_text(client) -> None:
     _, token = await create_person(client)
-    created = await client.post(
-        "/api/v1/todos", headers=auth(token), json={"title": "Buy milk"}
-    )
+    created = await client.post("/api/v1/todos", headers=auth(token), json={"title": "Buy milk"})
     todo_id = created.json()["id"]
     for payload in ({"title": "   "}, {"title": "a" * 201}, {"description": "d" * 2001}, {}):
-        response = await client.patch(
-            f"/api/v1/todos/{todo_id}", headers=auth(token), json=payload
-        )
+        response = await client.patch(f"/api/v1/todos/{todo_id}", headers=auth(token), json=payload)
         assert response.status_code == 422, payload
     stored = await client.get(f"/api/v1/todos/{todo_id}", headers=auth(token))
     assert stored.json()["title"] == "Buy milk"
@@ -115,9 +109,7 @@ async def test_patch_not_found_and_unauthenticated(client) -> None:
         headers=auth(owner_token),
         json={"title": "Missing"},
     )
-    anonymous = await client.patch(
-        f"/api/v1/todos/{todo_id}", json={"title": "No"}
-    )
+    anonymous = await client.patch(f"/api/v1/todos/{todo_id}", json={"title": "No"})
     assert other.status_code == 404
     assert missing.status_code == 404
     assert anonymous.status_code == 401

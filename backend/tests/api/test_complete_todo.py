@@ -6,13 +6,13 @@ from tests.api_helpers import auth, create_person
 async def test_complete_keeps_the_todo_and_second_call_is_a_noop(client) -> None:
     _, token = await create_person(client)
     created = await client.post(
-        "/api/v1/todos", headers=auth(token),         json={"title": "Buy milk", "priority": "high"},
+        "/api/v1/todos",
+        headers=auth(token),
+        json={"title": "Buy milk", "priority": "high"},
     )
     todo_id = created.json()["id"]
 
-    completed = await client.post(
-        f"/api/v1/todos/{todo_id}/complete", headers=auth(token)
-    )
+    completed = await client.post(f"/api/v1/todos/{todo_id}/complete", headers=auth(token))
     again = await client.post(f"/api/v1/todos/{todo_id}/complete", headers=auth(token))
     listed = await client.get("/api/v1/todos", headers=auth(token))
 
@@ -32,12 +32,8 @@ async def test_complete_unknown_or_other_owner_is_not_found(client) -> None:
     )
     todo_id = created.json()["id"]
 
-    other = await client.post(
-        f"/api/v1/todos/{todo_id}/complete", headers=auth(other_token)
-    )
-    missing = await client.post(
-        f"/api/v1/todos/{uuid4()}/complete", headers=auth(owner_token)
-    )
+    other = await client.post(f"/api/v1/todos/{todo_id}/complete", headers=auth(other_token))
+    missing = await client.post(f"/api/v1/todos/{uuid4()}/complete", headers=auth(owner_token))
     anonymous = await client.post(f"/api/v1/todos/{todo_id}/complete")
 
     assert other.status_code == 404
