@@ -91,7 +91,6 @@ jobs:
 
       - name: Run tests with coverage
         run: |
-        run: |
           python -m pytest \
             --cov=todo_api \
             --cov-report=term-missing \
