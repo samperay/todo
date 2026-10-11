@@ -89,8 +89,15 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -e ".[dev]"
 
-      - name: Run tests
-        run: python -m pytest
+      - name: Run tests with coverage
+        run: |
+        run: |
+          python -m pytest \
+            --cov=todo_api \
+            --cov-report=term-missing \
+            --cov-report=xml:coverage.xml \
+            --cov-fail-under=90
+
 
   type-check:
     name: Mypy
