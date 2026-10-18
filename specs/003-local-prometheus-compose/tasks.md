@@ -25,7 +25,7 @@
 
 **Purpose**: Keep the API image free of local secrets and the host database. The FastAPI app, metrics, and tests already exist.
 
-- [ ] T001 Add `backend/.dockerignore` so the image build excludes `.venv`, `__pycache__`, `.pytest_cache`, `.mypy_cache`, `.env`, `todo.db`, and `*.db`. Do not add a Grafana file, an alert-rule file, or a new Python dependency in `backend/pyproject.toml`.
+- [X] T001 Add `backend/.dockerignore` so the image build excludes `.venv`, `__pycache__`, `.pytest_cache`, `.mypy_cache`, `.env`, `todo.db`, and `*.db`. Do not add a Grafana file, an alert-rule file, or a new Python dependency in `backend/pyproject.toml`.
 
 ---
 
@@ -35,7 +35,7 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T002 Add `backend/Dockerfile` from `python:3.12-slim` that installs the project in `backend/pyproject.toml` and `backend/src` and runs `uvicorn todo_api.main:app --host 0.0.0.0 --port 8000`. Do not pass `DATABASE_URL`, do not mount SQLite, do not use `--reload`, and do not edit `backend/src/todo_api/main.py` or `backend/src/todo_api/observability/metrics/`.
+- [X] T002 Add `backend/Dockerfile` from `python:3.12-slim` that installs the project in `backend/pyproject.toml` and `backend/src` and runs `uvicorn todo_api.main:app --host 0.0.0.0 --port 8000`. Do not pass `DATABASE_URL`, do not mount SQLite, do not use `--reload`, and do not edit `backend/src/todo_api/main.py` or `backend/src/todo_api/observability/metrics/`.
 
 **Checkpoint**: The API image builds and listens on `0.0.0.0:8000` inside the container. Host publishing is not this phase.
 
@@ -51,12 +51,12 @@
 
 > **NOTE: Write these tests FIRST, ensure they FAIL before implementation**
 
-- [ ] T003 [US1] Add failing tests in `backend/tests/compose/test_monitoring_config.py` that read `compose.yaml` and `deploy/prometheus/prometheus.yml` without starting Docker. Assert the stack has services `todo-api` and `prometheus` only; Prometheus image is `prom/prometheus:v3.13.4`; published ports are `127.0.0.1:8000:8000` and `127.0.0.1:9090:9090` and neither uses `0.0.0.0`; the only scrape job is `todo-api` with target `todo-api:8000`, path `/metrics`, scheme `http`, and `scrape_interval: 15s` both globally and on that job; `rule_files` and `alerting` are absent; the file has no password, token, or todo contents; named volume `prometheus-data` is mounted at `/prometheus` and is not a bind mount of the repository. Tests must fail while those files are missing.
+- [X] T003 [US1] Add failing tests in `backend/tests/compose/test_monitoring_config.py` that read `compose.yaml` and `deploy/prometheus/prometheus.yml` without starting Docker. Assert the stack has services `todo-api` and `prometheus` only; Prometheus image is `prom/prometheus:v3.13.4`; published ports are `127.0.0.1:8000:8000` and `127.0.0.1:9090:9090` and neither uses `0.0.0.0`; the only scrape job is `todo-api` with target `todo-api:8000`, path `/metrics`, scheme `http`, and `scrape_interval: 15s` both globally and on that job; `rule_files` and `alerting` are absent; the file has no password, token, or todo contents; named volume `prometheus-data` is mounted at `/prometheus` and is not a bind mount of the repository. Tests must fail while those files are missing.
 
 ### Implementation for User Story 1
 
-- [ ] T004 [P] [US1] Add `deploy/prometheus/prometheus.yml` with `global.scrape_interval: 15s` and one job `todo-api` whose `metrics_path` is `/metrics`, `scrape_interval` is `15s`, and `static_configs` target is `todo-api:8000`. Do not use `localhost` or `127.0.0.1` as the target. Omit `rule_files`, `alerting`, bearer tokens, and extra headers. Match `specs/003-local-prometheus-compose/contracts/prometheus-scrape.md`.
-- [ ] T005 [P] [US1] Add root `compose.yaml` with services `todo-api` and `prometheus` only. Build `todo-api` from `backend/Dockerfile` and publish `127.0.0.1:8000:8000`. Use image `prom/prometheus:v3.13.4`, publish `127.0.0.1:9090:9090`, mount `./deploy/prometheus/prometheus.yml` read-only at `/etc/prometheus/prometheus.yml`, mount named volume `prometheus-data` at `/prometheus`, and set `--storage.tsdb.path=/prometheus` with no retention override and no root user. Do not add a healthcheck `depends_on` that waits for `/metrics`, a SQLite volume, `DATABASE_URL`, Grafana, or Alertmanager. Start command remains `docker compose up -d --build`. Match `specs/003-local-prometheus-compose/contracts/compose-stack.md`.
+- [X] T004 [P] [US1] Add `deploy/prometheus/prometheus.yml` with `global.scrape_interval: 15s` and one job `todo-api` whose `metrics_path` is `/metrics`, `scrape_interval` is `15s`, and `static_configs` target is `todo-api:8000`. Do not use `localhost` or `127.0.0.1` as the target. Omit `rule_files`, `alerting`, bearer tokens, and extra headers. Match `specs/003-local-prometheus-compose/contracts/prometheus-scrape.md`.
+- [X] T005 [P] [US1] Add root `compose.yaml` with services `todo-api` and `prometheus` only. Build `todo-api` from `backend/Dockerfile` and publish `127.0.0.1:8000:8000`. Use image `prom/prometheus:v3.13.4`, publish `127.0.0.1:9090:9090`, mount `./deploy/prometheus/prometheus.yml` read-only at `/etc/prometheus/prometheus.yml`, mount named volume `prometheus-data` at `/prometheus`, and set `--storage.tsdb.path=/prometheus` with no retention override and no root user. Do not add a healthcheck `depends_on` that waits for `/metrics`, a SQLite volume, `DATABASE_URL`, Grafana, or Alertmanager. Start command remains `docker compose up -d --build`. Match `specs/003-local-prometheus-compose/contracts/compose-stack.md`.
 
 **Checkpoint**: User Story 1 is functional. The target becomes healthy on a later scrape if Prometheus starts before the API listens. `pytest backend/tests/compose/test_monitoring_config.py` passes the US1 assertions.
 
@@ -70,11 +70,11 @@
 
 ### Tests for User Story 2 ⚠️
 
-- [ ] T006 [US2] Extend `backend/tests/compose/test_monitoring_config.py` so it fails until `README.md` contains the throughput query `sum by (method, handler, status) (rate(http_requests_total[1m]))`, the total `sum(rate(http_requests_total[1m]))`, the client-error query `sum(rate(http_requests_total{status=~"4.."}[1m]))` without `or vector(0)`, the server-error query `sum(rate(http_requests_total{status=~"5.."}[1m])) or vector(0)`, and both `histogram_quantile(0.50, ...)` and `histogram_quantile(0.95, ...)` over `rate(http_request_duration_seconds_bucket[1m])`. Assert the client-error query is not given a zero substitution.
+- [X] T006 [US2] Extend `backend/tests/compose/test_monitoring_config.py` so it fails until `README.md` contains the throughput query `sum by (method, handler, status) (rate(http_requests_total[1m]))`, the total `sum(rate(http_requests_total[1m]))`, the client-error query `sum(rate(http_requests_total{status=~"4.."}[1m]))` without `or vector(0)`, the server-error query `sum(rate(http_requests_total{status=~"5.."}[1m])) or vector(0)`, and both `histogram_quantile(0.50, ...)` and `histogram_quantile(0.95, ...)` over `rate(http_request_duration_seconds_bucket[1m])`. Assert the client-error query is not given a zero substitution.
 
 ### Implementation for User Story 2
 
-- [ ] T007 [US2] Add a PromQL section to `README.md` with the queries and the one-minute window from `specs/003-local-prometheus-compose/contracts/promql-queries.md`. State that `rate()` needs two samples of the same `method`, `handler`, and `status` series; a newly created counter with only one sample has no earlier value, so Prometheus omits it and that sample is not a per-second rate. Do not add a dashboard file or change series in `backend/src/todo_api/observability/metrics/definitions.py`.
+- [X] T007 [US2] Add a PromQL section to `README.md` with the queries and the one-minute window from `specs/003-local-prometheus-compose/contracts/promql-queries.md`. State that `rate()` needs two samples of the same `method`, `handler`, and `status` series; a newly created counter with only one sample has no earlier value, so Prometheus omits it and that sample is not a per-second rate. Do not add a dashboard file or change series in `backend/src/todo_api/observability/metrics/definitions.py`.
 
 **Checkpoint**: The three questions are documented and match the contract. Querying them still requires the running stack from User Story 1.
 
@@ -88,11 +88,11 @@
 
 ### Tests for User Story 3 ⚠️
 
-- [ ] T008 [US3] Extend `backend/tests/compose/test_monitoring_config.py` so it fails until `README.md` states that named volume `prometheus-data` survives `docker compose restart` and `docker compose down`, is removed by `docker compose down -v`, and that `todo-api` has no database volume so SQLite rows need not survive an API container restart.
+- [X] T008 [US3] Extend `backend/tests/compose/test_monitoring_config.py` so it fails until `README.md` states that named volume `prometheus-data` survives `docker compose restart` and `docker compose down`, is removed by `docker compose down -v`, and that `todo-api` has no database volume so SQLite rows need not survive an API container restart.
 
 ### Implementation for User Story 3
 
-- [ ] T009 [US3] Add that persistence section to `README.md`. Quote the stored-sample rules: the volume is mounted at `/prometheus`; samples survive Prometheus stop, start, and recreation; `docker compose down -v` is the explicit delete; the API database stays the default `sqlite+aiosqlite:///./todo.db` on the container filesystem with no volume. Do not add a SQLite volume to `compose.yaml`.
+- [X] T009 [US3] Add that persistence section to `README.md`. Quote the stored-sample rules: the volume is mounted at `/prometheus`; samples survive Prometheus stop, start, and recreation; `docker compose down -v` is the explicit delete; the API database stays the default `sqlite+aiosqlite:///./todo.db` on the container filesystem with no volume. Do not add a SQLite volume to `compose.yaml`.
 
 **Checkpoint**: Restart persistence is documented and the Compose file still has only the Prometheus volume.
 
@@ -106,11 +106,11 @@
 
 ### Tests for User Story 4 ⚠️
 
-- [ ] T010 [US4] Extend `backend/tests/compose/test_monitoring_config.py` so it fails until `README.md` contains `docker compose run --rm --no-deps --entrypoint promtool prometheus check config /etc/prometheus/prometheus.yml`, the baseline calls `POST /api/v1/users`, authorized `GET /api/v1/todos`, and unauthenticated `POST /api/v1/todos`, the wait for both a `2xx` and a `4xx` `http_requests_total` series, and the following at least 10 additional requests before the next scrape. Assert the procedure says a one-sample counter is not a rate.
+- [X] T010 [US4] Extend `backend/tests/compose/test_monitoring_config.py` so it fails until `README.md` contains `docker compose run --rm --no-deps --entrypoint promtool prometheus check config /etc/prometheus/prometheus.yml`, the baseline calls `POST /api/v1/users`, authorized `GET /api/v1/todos`, and unauthenticated `POST /api/v1/todos`, the wait for both a `2xx` and a `4xx` `http_requests_total` series, and the following at least 10 additional requests before the next scrape. Assert the procedure says a one-sample counter is not a rate.
 
 ### Implementation for User Story 4
 
-- [ ] T011 [US4] Add the validation command and the verification procedure to `README.md`, in the order in `specs/003-local-prometheus-compose/contracts/verification.md` and `specs/003-local-prometheus-compose/quickstart.md`. Baseline requests are not part of the 10. Do not tell the reader to prove a non-zero rate with two scrapes that both occur after the additional traffic. Do not add the procedure to `.github/workflows/ci.yml`.
+- [X] T011 [US4] Add the validation command and the verification procedure to `README.md`, in the order in `specs/003-local-prometheus-compose/contracts/verification.md` and `specs/003-local-prometheus-compose/quickstart.md`. Baseline requests are not part of the 10. Do not tell the reader to prove a non-zero rate with two scrapes that both occur after the additional traffic. Do not add the procedure to `.github/workflows/ci.yml`.
 
 **Checkpoint**: Config validation and the full local procedure are written down. Query checks fit the 5-minute budget and the full procedure fits the 15-minute budget.
 
@@ -120,8 +120,8 @@
 
 **Purpose**: Confirm the stories still pass together and the application metrics are untouched.
 
-- [ ] T012 Run `pytest` from `backend/`, including `backend/tests/compose/test_monitoring_config.py` and `backend/tests/api/test_metrics.py`. Existing metrics tests must still pass with labels `method`, `handler`, and `status` on `http_requests_total` and `http_request_duration_seconds`, and `method` only on `http_requests_in_progress`.
-- [ ] T013 Walk `specs/003-local-prometheus-compose/quickstart.md` and record each result. Run `promtool check config` on the delivered Prometheus file and confirm exit 0. Copy that file to a temporary path, make the copy invalid, run the same command on the copy, and confirm a non-zero exit. Leave the delivered file unchanged and do not start the stack from the copy. Confirm loopback ports `127.0.0.1:8000` and `127.0.0.1:9090`. Start Prometheus before the Todo API is accepting collections, confirm the target is unhealthy, then start the API and confirm the target becomes healthy on a later scrape without restarting Prometheus. With `127.0.0.1:8000` or `127.0.0.1:9090` already in use, confirm `docker compose up` fails with a visible address-in-use error. After the target is healthy, send successful responses and at least one HTTP 4xx response, wait for a scrape that contains both counter series, send at least 10 additional requests that increase those same series and include successes and an HTTP 4xx response, wait for the next scrape, and confirm non-zero throughput, a non-zero 4xx rate, numeric 0 for 5xx, and numeric P50 and P95 over a window that contains both samples. Stop only the Todo API container, confirm Prometheus shows the target unhealthy and the latest scrape error, and confirm previously collected samples remain queryable. Start the API again and confirm the target recovers without restarting Prometheus. Restart the Prometheus container and confirm samples from before the restart remain queryable. Recreate the Prometheus container without deleting named volume `prometheus-data` and confirm those samples still remain. Do not run `docker compose down -v` or otherwise delete `prometheus-data` during this walk.
+- [X] T012 Run `pytest` from `backend/`, including `backend/tests/compose/test_monitoring_config.py` and `backend/tests/api/test_metrics.py`. Existing metrics tests must still pass with labels `method`, `handler`, and `status` on `http_requests_total` and `http_request_duration_seconds`, and `method` only on `http_requests_in_progress`.
+- [X] T013 Walk `specs/003-local-prometheus-compose/quickstart.md` and record each result. Run `promtool check config` on the delivered Prometheus file and confirm exit 0. Copy that file to a temporary path, make the copy invalid, run the same command on the copy, and confirm a non-zero exit. Leave the delivered file unchanged and do not start the stack from the copy. Confirm loopback ports `127.0.0.1:8000` and `127.0.0.1:9090`. Start Prometheus before the Todo API is accepting collections, confirm the target is unhealthy, then start the API and confirm the target becomes healthy on a later scrape without restarting Prometheus. With `127.0.0.1:8000` or `127.0.0.1:9090` already in use, confirm `docker compose up` fails with a visible address-in-use error. After the target is healthy, send successful responses and at least one HTTP 4xx response, wait for a scrape that contains both counter series, send at least 10 additional requests that increase those same series and include successes and an HTTP 4xx response, wait for the next scrape, and confirm non-zero throughput, a non-zero 4xx rate, numeric 0 for 5xx, and numeric P50 and P95 over a window that contains both samples. Stop only the Todo API container, confirm Prometheus shows the target unhealthy and the latest scrape error, and confirm previously collected samples remain queryable. Start the API again and confirm the target recovers without restarting Prometheus. Restart the Prometheus container and confirm samples from before the restart remain queryable. Recreate the Prometheus container without deleting named volume `prometheus-data` and confirm those samples still remain. Do not run `docker compose down -v` or otherwise delete `prometheus-data` during this walk.
 
 ---
 
