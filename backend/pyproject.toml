@@ -9,6 +9,7 @@ dependencies = [
     "pydantic>=2",
     "pydantic-settings>=2",
     "greenlet>=3",
+    "prometheus-client>=0.25",
     "sqlalchemy>=2",
     "uvicorn>=0.32"
 ]

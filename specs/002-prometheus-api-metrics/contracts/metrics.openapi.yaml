@@ -1,0 +1,36 @@
+openapi: 3.1.0
+info:
+  title: Todo API metrics
+  version: 0.1.0
+  description: >
+    Prometheus scrape of API traffic, latency, HTTP errors, and in-progress
+    requests. This document does not change the todo or user contract in
+    specs/001-todo-management/contracts/todos.openapi.yaml. Series names and
+    labels are in metrics-catalog.md.
+servers:
+  - url: /
+paths:
+  /metrics:
+    get:
+      operationId: scrapeMetrics
+      summary: Prometheus text snapshot of API measurements
+      description: >
+        No bearer token. The response is the Prometheus text exposition
+        format. Scraping this path does not add to the traffic, latency,
+        error, or in-progress series. The body must not contain todo titles,
+        descriptions, tokens, or resource ids.
+      security: []
+      responses:
+        "200":
+          description: Current snapshot for this process.
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: |
+                # HELP http_requests_total Completed HTTP requests.
+                # TYPE http_requests_total counter
+                # HELP http_request_duration_seconds HTTP request latency in seconds.
+                # TYPE http_request_duration_seconds histogram
+                # HELP http_requests_in_progress HTTP requests currently in progress.
+                # TYPE http_requests_in_progress gauge

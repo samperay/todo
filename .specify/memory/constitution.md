@@ -1,15 +1,14 @@
 <!--
 Sync Impact Report
-- Version change: 2.0.0 → 3.0.0
+- Version change: 3.0.0 → 3.1.0
 - Modified principles:
-  - III. Tested Features: migration-test obligation removed so the principle
-    matches the initial phase, where migrations are not required
-  - VI. Portable Persistence: Alembic requirement removed; schema MAY be
-    created with SQLAlchemy metadata.create_all(); business logic MUST NOT
-    depend on SQLite-specific functionality
+  - II. Typed Contracts: structured JSON request and response bodies still
+    MUST use Pydantic v2. A protocol-specific response MAY use the external
+    representation directly. Prometheus text exposition is named. The
+    exception MUST NOT bypass Pydantic for ordinary JSON endpoints. Todo
+    and User JSON APIs stay on Pydantic v2.
 - Added sections: none
-- Removed sections:
-  - Mandatory Alembic migrations in Technology Stack and Development Workflow
+- Removed sections: none
 - Follow-up TODOs: none
 -->
 
@@ -45,15 +44,25 @@ Public and internal boundaries MUST be explicit and statically typed.
 - Every function, method, and module-level variable that crosses a layer
   boundary MUST have type hints. Untyped public signatures are not
   acceptable.
-- Request bodies, response bodies, and settings models MUST use
-  Pydantic v2.
+- Structured application JSON request bodies, response bodies, and
+  settings models MUST use Pydantic v2. The existing Todo and User JSON
+  APIs remain in this class.
+- A protocol-specific endpoint whose representation is defined by an
+  external protocol or standard MAY return that representation directly
+  when wrapping it in a Pydantic or JSON model would violate the protocol
+  contract. Prometheus metrics exposition is one such endpoint and MAY
+  return the Prometheus text exposition format directly.
+- That exception MUST NOT be used to bypass Pydantic for an ordinary JSON
+  API endpoint.
 - Persistence models MUST use SQLAlchemy 2.x typed mappings. Pydantic
   models and SQLAlchemy models MUST remain separate types.
 - Type checkers and the test suite MUST be able to import the application
   without ignoring missing annotations on new code.
 
-Rationale: Typed contracts catch shape errors before runtime and keep API
-schemas independent of the database schema.
+Rationale: Pydantic models keep JSON API contracts independent of the
+database schema. An external protocol document stays valid for its
+clients. The exception is limited to that document and does not open a
+path around Pydantic for ordinary JSON endpoints.
 
 ### III. Tested Features
 
@@ -185,4 +194,4 @@ constitution wins until it is amended.
 - Runtime guidance for contributors lives in this file. Template copies
   under `.specify/templates/` MUST NOT be edited to record project rules.
 
-**Version**: 3.0.0 | **Ratified**: 2026-10-02 | **Last Amended**: 2026-10-02
+**Version**: 3.1.0 | **Ratified**: 2026-10-02 | **Last Amended**: 2026-10-18

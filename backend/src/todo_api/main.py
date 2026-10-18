@@ -9,6 +9,11 @@ from todo_api.api.routes.users import router as users_router
 from todo_api.core.config import Settings, get_settings
 from todo_api.db.schema import init_schema
 from todo_api.db.session import create_engine, create_session_factory
+from todo_api.observability.metrics import (
+    PrometheusMiddleware,
+    create_registry,
+    register_metrics_endpoint,
+)
 
 
 def create_app(settings: Settings | None = None) -> FastAPI:
@@ -28,6 +33,12 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     register_exception_handlers(app)
     app.include_router(users_router)
     app.include_router(todos_router)
+    registry = create_registry()
+    app.state.metrics_registry = registry
+    app.add_middleware(PrometheusMiddleware, registry=registry)
+
+    register_metrics_endpoint(app)
+
     return app
 
 
