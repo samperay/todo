@@ -1,0 +1,25 @@
+# Observability glossary
+
+- **Observability:** Ability to infer system behavior from emitted signals.
+- **Metric:** Numerical measurement represented as time series.
+- **Log:** Timestamped event record, ideally structured.
+- **Trace:** Linked spans representing a request's execution path.
+- **Counter:** Cumulative metric that normally only increases until reset.
+- **Gauge:** Measurement that can increase or decrease.
+- **Histogram:** Bucketed observations with sum and count.
+- **Scrape:** Prometheus polling an HTTP metrics endpoint.
+- **Target:** Endpoint Prometheus attempts to scrape.
+- **Job:** Label grouping targets of a scrape configuration.
+- **Instance:** Label identifying an individual scrape target.
+- **PromQL:** Prometheus query language.
+- **Rate:** Per-second average counter growth over a range.
+- **P95:** 95th-percentile latency; approximately 95% of observations are at or below it.
+- **SLI:** Measured reliability indicator.
+- **SLO:** Reliability target over an evaluation window.
+- **Error budget:** Amount of failure permitted by an SLO.
+- **Alert pending:** Expression true but `for` duration not yet satisfied.
+- **Alert firing:** Expression continuously true for the required duration.
+- **Recording rule:** Periodically evaluates an expression and stores the result as a series.
+- **Cardinality:** Number of distinct time series produced by label combinations.
+- **Service discovery:** Automatically determining which endpoints to scrape.
+- **OpenTelemetry:** Vendor-neutral APIs/SDKs and collection components for telemetry.
