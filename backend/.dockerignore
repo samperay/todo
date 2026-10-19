@@ -1,0 +1,8 @@
+# Keep the local environment, caches, and SQLite file out of the API image.
+.venv
+__pycache__
+.pytest_cache
+.mypy_cache
+.env
+todo.db
+*.db
