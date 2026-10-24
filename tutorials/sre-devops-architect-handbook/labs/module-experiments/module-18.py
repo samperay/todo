@@ -1,12 +1,32 @@
 #!/usr/bin/env python3
-"""Safe standalone baseline/failure/recovery experiment."""
-import sqlite3,tempfile,os,shutil,time
-folder=tempfile.mkdtemp();source=os.path.join(folder,'source.sqlite');backup=os.path.join(folder,'backup.sqlite')
-try:
- db=sqlite3.connect(source);db.execute('create table t(v text)');db.execute("insert into t values ('before backup')");db.commit()
- with sqlite3.connect(backup) as b:db.backup(b)
- db.execute("insert into t values ('after backup')");db.commit();db.close()
- with sqlite3.connect(backup) as b:print('restored rows:',b.execute('select * from t').fetchall())
- print('failure: post-backup write not restored; RPO is nonzero')
-finally:shutil.rmtree(folder)
-print('recovery: validate backup and measure actual restore duration')
+"""Module 18 — Backup, restore and recovery verification.
+
+Standalone educational experiment for the Todo SRE/DevOps Architect handbook.
+Run: python3 tutorials/sre-devops-architect-handbook/labs/module-experiments/module-18.py
+
+Learning flow:
+  1. Read the comments and predict the output.
+  2. Run the healthy case and inspect the output.
+  3. Observe the explicitly labeled simulated failure.
+  4. Explain the recovery and production limitations.
+
+This script does not modify the Todo application's code or database.
+"""
+
+import sqlite3
+
+# SQLite backup API copies data between two disposable in-memory databases.
+source = sqlite3.connect(":memory:")
+backup = sqlite3.connect(":memory:")
+source.execute("CREATE TABLE todos (title TEXT)")
+source.execute("INSERT INTO todos VALUES ('Recover me')")
+source.commit()
+source.backup(backup)
+source.execute("DELETE FROM todos")  # Simulated data-loss incident.
+source.commit()
+print("EXPECTED FAILURE: live rows =", source.execute("SELECT COUNT(*) FROM todos").fetchone()[0])
+backup.backup(source)
+print("RECOVERY: restored rows =", source.execute("SELECT COUNT(*) FROM todos").fetchone()[0])
+source.close()
+backup.close()
+print("NOTE: real recovery requires tested off-host backups and RPO/RTO targets.")

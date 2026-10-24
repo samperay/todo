@@ -1,15 +1,39 @@
 #!/usr/bin/env python3
-"""Safe standalone baseline/failure/recovery experiment."""
+"""Module 02 — Timeouts, retries and idempotency.
+
+Standalone educational experiment for the Todo SRE/DevOps Architect handbook.
+Run: python3 tutorials/sre-devops-architect-handbook/labs/module-experiments/module-02.py
+
+Learning flow:
+  1. Read the comments and predict the output.
+  2. Run the healthy case and inspect the output.
+  3. Observe the explicitly labeled simulated failure.
+  4. Explain the recovery and production limitations.
+
+This script does not modify the Todo application's code or database.
+"""
+
 import time
-attempts=0
-for n in range(1,5):
-    attempts+=1
-    ok=n>=3
-    print('attempt',n,'success' if ok else 'simulated HTTP 503')
-    if ok:break
-    delay=min(0.05*2**(n-1),0.2)
-    print('backoff seconds',round(delay,3));time.sleep(delay)
-print('Failure: persistent 503; circuit opens after 3 failures')
-failures=3;state='OPEN' if failures>=3 else 'CLOSED'
-print('breaker state:',state)
-print('Recovery: after cooldown, test ONE request in HALF_OPEN before closing')
+
+# A transient failure can be retried. A permanent failure should not be retried forever.
+attempts = 0
+
+def flaky_service():
+    global attempts
+    attempts += 1
+    if attempts < 3:
+        raise ConnectionError("temporary dependency outage")
+    return "Todo notification accepted"
+
+for attempt in range(1, 5):
+    try:
+        print("SUCCESS:", flaky_service(), "on attempt", attempt)
+        break
+    except ConnectionError as error:
+        print("EXPECTED FAILURE:", error)
+        if attempt == 4:
+            raise
+        delay = 0.05 * (2 ** (attempt - 1))  # Small exponential backoff for demo.
+        print("RETRY after", round(delay, 3), "seconds")
+        time.sleep(delay)
+print("TRADE-OFF: retrying non-idempotent writes may create duplicates.")

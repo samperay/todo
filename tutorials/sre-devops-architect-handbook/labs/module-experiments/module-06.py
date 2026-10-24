@@ -1,11 +1,40 @@
 #!/usr/bin/env python3
-"""Safe standalone baseline/failure/recovery experiment."""
+"""Module 06 — TCP connectivity and timeouts.
+
+Standalone educational experiment for the Todo SRE/DevOps Architect handbook.
+Run: python3 tutorials/sre-devops-architect-handbook/labs/module-experiments/module-06.py
+
+Learning flow:
+  1. Read the comments and predict the output.
+  2. Run the healthy case and inspect the output.
+  3. Observe the explicitly labeled simulated failure.
+  4. Explain the recovery and production limitations.
+
+This script does not modify the Todo application's code or database.
+"""
+
 import socket
-for host in ('localhost','example.invalid'):
- try:print('DNS',host,socket.getaddrinfo(host,None)[0][4][0])
- except socket.gaierror:print('EXPECTED DNS failure:',host)
-s=socket.socket();s.settimeout(1)
-try:s.connect(('127.0.0.1',65534));print('unexpected listener')
-except OSError as e:print('EXPECTED TCP failure:',type(e).__name__)
-finally:s.close()
-print('Recovery: confirm DNS and target service listener before changing firewall rules')
+from threading import Thread
+
+# Bind an ephemeral loopback port; no real Todo service is changed.
+server = socket.socket()
+server.bind(("127.0.0.1", 0))
+server.listen(1)
+port = server.getsockname()[1]
+
+def serve_once():
+    connection, _ = server.accept()
+    with connection:
+        connection.sendall(b"hello from server")
+    server.close()
+
+thread = Thread(target=serve_once)
+thread.start()
+with socket.create_connection(("127.0.0.1", port), timeout=2) as client:
+    print("SUCCESS:", client.recv(1024).decode())
+thread.join()
+try:
+    socket.create_connection(("127.0.0.1", port), timeout=1)
+except OSError as error:
+    print("EXPECTED FAILURE: listener closed:", type(error).__name__)
+print("RECOVERY: restore the listener and verify TCP connectivity.")
