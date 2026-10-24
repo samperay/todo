@@ -1,4 +1,4 @@
-# Module 19 — Ai For Sre And Devops (Handbook v3)
+# Module 19 — Ai For Sre And Devops (Handbook v5)
 
 **Purpose:** Learn ai for sre and devops through small Python experiments and Todo code inspection.  
 **Baseline lab:** [`module-19.py`](../../labs/module-experiments/module-19.py)  
@@ -40,3 +40,15 @@ Run only one lesson at a time. `--lesson NN.MM` prints the lesson focus and exec
 ## Completion gate
 
 For each lesson: understand the concept, inspect actual Todo code, run the lab, discuss a failure/recovery, and record the output. Infrastructure experiments are offline models unless explicitly labeled otherwise.
+
+## V5 study protocol
+
+Open each linked lesson and complete **Beginner → Intermediate → Architect**. Each lesson contains the complete code and expected observations; the shared `module-NN.py` is only an optional baseline. Tutor: reference the lesson path and ask for actual output; do not paste the lesson into chat.
+
+## Canonical roadmap technology tracks
+
+- [MCP and AI-assisted Todo — Learn → Integrate → Operate](technologies/mcp-ai/README.md)
+
+## Technology track: MCP and AI-assisted Todo
+
+Start with [MCP and AI-assisted Todo — Learn → Integrate → Operate](technologies/mcp-ai/README.md).

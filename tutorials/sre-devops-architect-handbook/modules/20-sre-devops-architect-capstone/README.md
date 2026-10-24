@@ -1,4 +1,4 @@
-# Module 20 — Sre Devops Architect Capstone (Handbook v3)
+# Module 20 — Sre Devops Architect Capstone (Handbook v5)
 
 **Purpose:** Learn sre devops architect capstone through small Python experiments and Todo code inspection.  
 **Baseline lab:** [`module-20.py`](../../labs/module-experiments/module-20.py)  
@@ -41,3 +41,15 @@ Run only one lesson at a time. `--lesson NN.MM` prints the lesson focus and exec
 ## Completion gate
 
 For each lesson: understand the concept, inspect actual Todo code, run the lab, discuss a failure/recovery, and record the output. Infrastructure experiments are offline models unless explicitly labeled otherwise.
+
+## V5 study protocol
+
+Open each linked lesson and complete **Beginner → Intermediate → Architect**. Each lesson contains the complete code and expected observations; the shared `module-NN.py` is only an optional baseline. Tutor: reference the lesson path and ask for actual output; do not paste the lesson into chat.
+
+## Canonical roadmap technology tracks
+
+- [SRE reliability capstone — Learn → Integrate → Operate](technologies/reliability-capstone/README.md)
+
+## Technology track: Reliability architecture
+
+Start with [Reliability architecture — Learn → Integrate → Operate](technologies/reliability-capstone/README.md).

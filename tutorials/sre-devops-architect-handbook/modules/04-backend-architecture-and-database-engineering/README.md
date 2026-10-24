@@ -1,4 +1,4 @@
-# Module 04 — Backend Architecture And Database Engineering (Handbook v3)
+# Module 04 — Backend Architecture And Database Engineering (Handbook v5)
 
 **Purpose:** Learn backend architecture and database engineering through small Python experiments and Todo code inspection.  
 **Baseline lab:** [`module-04.py`](../../labs/module-experiments/module-04.py)  
@@ -41,3 +41,21 @@ Run only one lesson at a time. `--lesson NN.MM` prints the lesson focus and exec
 ## Completion gate
 
 For each lesson: understand the concept, inspect actual Todo code, run the lab, discuss a failure/recovery, and record the output. Infrastructure experiments are offline models unless explicitly labeled otherwise.
+
+## V5 study protocol
+
+Open each linked lesson and complete **Beginner → Intermediate → Architect**. Each lesson contains the complete code and expected observations; the shared `module-NN.py` is only an optional baseline. Tutor: reference the lesson path and ask for actual output; do not paste the lesson into chat.
+
+## Canonical roadmap technology tracks
+
+- [Redis cache-aside for user-scoped Todo lists — Learn → Integrate → Operate](technologies/redis/README.md)
+
+- [PostgreSQL decision and migration — Learn → Integrate → Operate](technologies/postgresql/README.md)
+
+## Technology track: Redis caching
+
+Start with [Redis caching — Learn → Integrate → Operate](technologies/redis/README.md).
+
+## Technology track: PostgreSQL migration
+
+Start with [PostgreSQL migration — Learn → Integrate → Operate](technologies/postgresql/README.md).

@@ -1,4 +1,4 @@
-# Module 10 — Kubernetes Fundamentals (Handbook v3)
+# Module 10 — Kubernetes Fundamentals (Handbook v5)
 
 **Purpose:** Learn kubernetes fundamentals through small Python experiments and Todo code inspection.  
 **Baseline lab:** [`module-10.py`](../../labs/module-experiments/module-10.py)  
@@ -40,3 +40,15 @@ Run only one lesson at a time. `--lesson NN.MM` prints the lesson focus and exec
 ## Completion gate
 
 For each lesson: understand the concept, inspect actual Todo code, run the lab, discuss a failure/recovery, and record the output. Infrastructure experiments are offline models unless explicitly labeled otherwise.
+
+## V5 study protocol
+
+Open each linked lesson and complete **Beginner → Intermediate → Architect**. Each lesson contains the complete code and expected observations; the shared `module-NN.py` is only an optional baseline. Tutor: reference the lesson path and ask for actual output; do not paste the lesson into chat.
+
+## Canonical roadmap technology tracks
+
+- [Kubernetes workload operations — Learn → Integrate → Operate](technologies/kubernetes/README.md)
+
+## Technology track: Kubernetes
+
+Start with [Kubernetes — Learn → Integrate → Operate](technologies/kubernetes/README.md).

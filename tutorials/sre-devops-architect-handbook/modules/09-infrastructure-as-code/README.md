@@ -1,4 +1,4 @@
-# Module 09 — Infrastructure As Code (Handbook v3)
+# Module 09 — Infrastructure As Code (Handbook v5)
 
 **Purpose:** Learn infrastructure as code through small Python experiments and Todo code inspection.  
 **Baseline lab:** [`module-09.py`](../../labs/module-experiments/module-09.py)  
@@ -40,3 +40,15 @@ Run only one lesson at a time. `--lesson NN.MM` prints the lesson focus and exec
 ## Completion gate
 
 For each lesson: understand the concept, inspect actual Todo code, run the lab, discuss a failure/recovery, and record the output. Infrastructure experiments are offline models unless explicitly labeled otherwise.
+
+## V5 study protocol
+
+Open each linked lesson and complete **Beginner → Intermediate → Architect**. Each lesson contains the complete code and expected observations; the shared `module-NN.py` is only an optional baseline. Tutor: reference the lesson path and ask for actual output; do not paste the lesson into chat.
+
+## Canonical roadmap technology tracks
+
+- [Terraform and cloud architecture — Learn → Integrate → Operate](technologies/terraform-cloud/README.md)
+
+## Technology track: Terraform and cloud
+
+Start with [Terraform and cloud — Learn → Integrate → Operate](technologies/terraform-cloud/README.md).

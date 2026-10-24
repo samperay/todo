@@ -1,4 +1,4 @@
-# Module 06 — Networking And Api Architecture (Handbook v3)
+# Module 06 — Networking And Api Architecture (Handbook v5)
 
 **Purpose:** Learn networking and api architecture through small Python experiments and Todo code inspection.  
 **Baseline lab:** [`module-06.py`](../../labs/module-experiments/module-06.py)  
@@ -40,3 +40,15 @@ Run only one lesson at a time. `--lesson NN.MM` prints the lesson focus and exec
 ## Completion gate
 
 For each lesson: understand the concept, inspect actual Todo code, run the lab, discuss a failure/recovery, and record the output. Infrastructure experiments are offline models unless explicitly labeled otherwise.
+
+## V5 study protocol
+
+Open each linked lesson and complete **Beginner → Intermediate → Architect**. Each lesson contains the complete code and expected observations; the shared `module-NN.py` is only an optional baseline. Tutor: reference the lesson path and ask for actual output; do not paste the lesson into chat.
+
+## Canonical roadmap technology tracks
+
+- [API gateway and edge controls — Learn → Integrate → Operate](technologies/api-gateway/README.md)
+
+## Technology track: API Gateway
+
+Start with [API Gateway — Learn → Integrate → Operate](technologies/api-gateway/README.md).
