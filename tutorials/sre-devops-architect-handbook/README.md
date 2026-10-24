@@ -1,86 +1,57 @@
-# Todo SRE/DevOps Architect — Engineering Handbook
+# Todo SRE/DevOps Architect Handbook — v3
 
-> **Canonical learning index.** Commit this directory under `tutorials/sre-devops-architect-handbook/` in the Todo repository. Version 2 includes 20 runnable module experiments and 230 topic-specific lesson exercises. These are foundational simulations and guided investigations, not 230 separate production deployments. This is a learning guide and target architecture, **not a claim that every technology is already implemented**.
+**Mission:** Learn SRE/DevOps architecture through the Todo React/Vite → FastAPI → SQLite project, one lesson at a time.
 
-## Mission
+**Important scope:** This package contains **20 executable Python module experiments** and a **Markdown lesson for each topic**. The general lesson pages guide code inspection and discussion; they share a module-level teaching simulation. **Lesson 03.02 has seven complete, independent hands-on exercises.** The other lessons do **not** yet have seven bespoke Python programs apiece; do not mistake the shared model for full technology-specific implementations.
 
-Learn development code, DevOps operation, and SRE/architecture decisions **together**, using the existing Todo application as a case study. Progress one lesson at a time: **concept → actual source code → infrastructure → safe lab → failure simulation → architecture trade-off → evidence**.
+## Current Todo baseline
 
-## Project baseline (verify against the active GitHub branch)
+- React/TypeScript/Vite frontend (`frontend/src/main.tsx`, `frontend/src/App.tsx`).
+- FastAPI/Pydantic/SQLAlchemy/SQLite backend (`backend/src/todo_api`).
+- Local development path: browser → Vite :5173 → `/api` proxy → FastAPI :8000 → SQLite.
+- Prometheus `/metrics`; bearer authentication. Never share real bearer tokens.
+- Queues, RabbitMQ, Kubernetes and cloud deployments are **proposed learning topics**, not verified deployed Todo features.
 
-- Frontend: React + TypeScript + Vite; `frontend/src/main.tsx`, `frontend/src/App.tsx`, `frontend/src/session/useTodoSession.ts`, `frontend/src/api/client.ts`.
-- Backend: FastAPI + Pydantic + SQLAlchemy + SQLite; `backend/src/todo_api/`.
-- Development routing: browser → Vite `127.0.0.1:5173` → `/api` proxy → FastAPI `127.0.0.1:8000` → SQLite.
-- Authentication: bearer token stored in browser `localStorage`; **never copy live tokens into issues, screenshots, or chat**.
-- Existing capabilities: Todo CRUD foundation, tests/CI and Prometheus `/metrics`; re-check their current state before changes.
-- SDD artifacts: `specs/`, `.specify/`, and GitHub PR reviews. Do not assume optional notification, RabbitMQ, Docker, or Kubernetes features already exist.
+## Start
 
-## How to use this with an AI tutor
+```bash
+python3 tutorials/sre-devops-architect-handbook/labs/module-experiments/module-03.py --list
+python3 tutorials/sre-devops-architect-handbook/labs/module-experiments/module-03.py --lesson 03.02
+```
 
-1. Share the GitHub **branch URL** and the path to this `README.md`.
-2. Say: `Resume Module NN, Lesson NN.MM. Read the handbook and actual repository files first. Teach one lesson only, with a small safe lab. Wait for my output before moving on.`
-3. For implementation: `Before coding, inspect spec.md, plan.md, tasks.md and the constitution. Propose a small PR-sized change and its acceptance tests.`
-4. Record actual outputs in `progress/LEARNING_LOG.md`. Mark complete **only after the lab and explanation are verified**.
-5. If repository code differs from examples here, **actual code wins**. Update the handbook in the same PR when a documented contract changes.
+Read the lesson file first, then run its lab. Stop after each exercise and discuss observed output before moving on.
 
-## Safety and architecture guardrails
+## Modules
 
-- Run destructive labs only against **disposable local data**; create backups first.
-- Use the Ubuntu VM for `systemd` exercises; macOS commands differ.
-- No real cloud resources without explicit billing, permission, and teardown review.
-- Do not add new infrastructure merely to complete a lesson. Explain the design first.
-- Keep SQLite for the current learning baseline; evaluate migration explicitly before shared-write horizontal scaling.
-- Separate the **observed system**, **proposed design**, and **implemented system** in every architecture document.
+- [01 — Application Architecture Fundamentals](modules/01-application-architecture-fundamentals/README.md)
+- [02 — Application Lifecycle And Resilience](modules/02-application-lifecycle-and-resilience/README.md)
+- [03 — Asynchronous Processing And Event Driven Architecture](modules/03-asynchronous-processing-and-event-driven-architecture/README.md)
+- [04 — Backend Architecture And Database Engineering](modules/04-backend-architecture-and-database-engineering/README.md)
+- [05 — Linux And Operating Systems](modules/05-linux-and-operating-systems/README.md)
+- [06 — Networking And Api Architecture](modules/06-networking-and-api-architecture/README.md)
+- [07 — Containerization](modules/07-containerization/README.md)
+- [08 — Ci Cd And Software Delivery](modules/08-ci-cd-and-software-delivery/README.md)
+- [09 — Infrastructure As Code](modules/09-infrastructure-as-code/README.md)
+- [10 — Kubernetes Fundamentals](modules/10-kubernetes-fundamentals/README.md)
+- [11 — Advanced Kubernetes Architecture](modules/11-advanced-kubernetes-architecture/README.md)
+- [12 — Cloud Architecture](modules/12-cloud-architecture/README.md)
+- [13 — Observability Engineering](modules/13-observability-engineering/README.md)
+- [14 — Sre Reliability Engineering](modules/14-sre-reliability-engineering/README.md)
+- [15 — Performance And Scalability](modules/15-performance-and-scalability/README.md)
+- [16 — Security And Devsecops](modules/16-security-and-devsecops/README.md)
+- [17 — Distributed Systems Architecture](modules/17-distributed-systems-architecture/README.md)
+- [18 — Disaster Recovery And Chaos Engineering](modules/18-disaster-recovery-and-chaos-engineering/README.md)
+- [19 — Ai For Sre And Devops](modules/19-ai-for-sre-and-devops/README.md)
+- [20 — Sre Devops Architect Capstone](modules/20-sre-devops-architect-capstone/README.md)
 
-## Completion criteria for each lesson
+## Tutor instructions
 
-- Can explain the concept in plain language and point to the relevant Todo code.
-- Can reproduce a successful path and one failure path.
-- Can state what evidence supports the diagnosis.
-- Can name at least one design trade-off and document it.
-- Has recorded commands, outputs (with secrets redacted), and next action.
+Read `START_HERE.md`, the module README, the lesson Markdown and the referenced lab `.py` before explaining. Explain only one exercise at a time; wait for terminal output. Never claim simulated infrastructure exists. Inspect the actual Todo code before suggesting modifications. Record verified evidence in the learning log.
 
-## Module map
+## Safety
 
-| Module | Focus | Handbook |
-|---|---|---|
-| 01 | Application Architecture Fundamentals | [Open](modules/01-application-architecture-fundamentals/README.md) |
-| 02 | Application Lifecycle and Resilience | [Open](modules/02-application-lifecycle-and-resilience/README.md) |
-| 03 | Asynchronous Processing and Event-Driven Architecture | [Open](modules/03-asynchronous-processing-and-event-driven-architecture/README.md) |
-| 04 | Backend Architecture and Database Engineering | [Open](modules/04-backend-architecture-and-database-engineering/README.md) |
-| 05 | Linux and Operating Systems | [Open](modules/05-linux-and-operating-systems/README.md) |
-| 06 | Networking and API Architecture | [Open](modules/06-networking-and-api-architecture/README.md) |
-| 07 | Containerization | [Open](modules/07-containerization/README.md) |
-| 08 | CI/CD and Software Delivery | [Open](modules/08-ci-cd-and-software-delivery/README.md) |
-| 09 | Infrastructure as Code | [Open](modules/09-infrastructure-as-code/README.md) |
-| 10 | Kubernetes Fundamentals | [Open](modules/10-kubernetes-fundamentals/README.md) |
-| 11 | Advanced Kubernetes Architecture | [Open](modules/11-advanced-kubernetes-architecture/README.md) |
-| 12 | Cloud Architecture | [Open](modules/12-cloud-architecture/README.md) |
-| 13 | Observability Engineering | [Open](modules/13-observability-engineering/README.md) |
-| 14 | SRE Reliability Engineering | [Open](modules/14-sre-reliability-engineering/README.md) |
-| 15 | Performance and Scalability | [Open](modules/15-performance-and-scalability/README.md) |
-| 16 | Security and DevSecOps | [Open](modules/16-security-and-devsecops/README.md) |
-| 17 | Distributed Systems Architecture | [Open](modules/17-distributed-systems-architecture/README.md) |
-| 18 | Disaster Recovery and Chaos Engineering | [Open](modules/18-disaster-recovery-and-chaos-engineering/README.md) |
-| 19 | AI for SRE and DevOps | [Open](modules/19-ai-for-sre-and-devops/README.md) |
-| 20 | SRE/DevOps Architect Capstone | [Open](modules/20-sre-devops-architect-capstone/README.md) |
+Labs run locally with Python 3 standard library. The HTTP/network labs may attempt loopback connections. They do not write to Todo data, provision cloud resources, or deploy containers. Use SDD specs and a separate PR for any actual application changes.
 
-## Suggested sequencing
+## Version 4 lesson enhancements
 
-- **01–06:** Application, resilience, messaging, backend, Linux, networking.
-- **07–12:** Containers, delivery, IaC, Kubernetes, cloud.
-- **13–18:** Observability, SRE, performance, security, distributed systems, disaster recovery.
-- **19–20:** AI-assisted operations and architect capstone.
-
-Lessons may be reordered when there is a practical reason, but record dependencies and avoid claiming a module complete without evidence.
-
-## Navigation
-
-- [Roadmap and module dependencies](ROADMAP.md)
-- [Learning log](progress/LEARNING_LOG.md)
-- [Lab record template](templates/LAB_RECORD.md)
-- [Architecture decision record template](templates/ADR_TEMPLATE.md)
-- [Incident runbook template](templates/RUNBOOK_TEMPLATE.md)
-- [Architecture baseline](architecture/CURRENT_AND_TARGET.md)
-- [Hands-on environment setup](labs/ENVIRONMENT_SETUP.md)
-- [Glossary](GLOSSARY.md)
+All existing lessons retain their original content and now include **1. Real-world analogy**, **2. Understanding the core concept**, and **4. What to Observe**. Lesson 03.02 has a detailed `queue.Queue` reference and hands-on observation checklist. Module README indexes also explain how to use these additions. Shared baseline experiments remain introductory simulations and must not be mistaken for individual real-world implementations.

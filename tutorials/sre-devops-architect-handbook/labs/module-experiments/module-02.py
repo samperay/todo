@@ -1,39 +1,47 @@
 #!/usr/bin/env python3
-"""Module 02 — Timeouts, retries and idempotency.
+"""Module 02: Application Lifecycle And Resilience. Safe Python 3 standard-library learning lab.
 
-Standalone educational experiment for the Todo SRE/DevOps Architect handbook.
-Run: python3 tutorials/sre-devops-architect-handbook/labs/module-experiments/module-02.py
+Usage:
+  python3 module-02.py
+  python3 module-02.py --list
+  python3 module-02.py --lesson 02.01
 
-Learning flow:
-  1. Read the comments and predict the output.
-  2. Run the healthy case and inspect the output.
-  3. Observe the explicitly labeled simulated failure.
-  4. Explain the recovery and production limitations.
-
-This script does not modify the Todo application's code or database.
+The lab is a teaching model; it does NOT deploy infrastructure or modify Todo.
 """
+import argparse
 
-import time
+LESSONS = {'02.01': 'react state and re rendering', '02.02': 'browser localstorage versus server persistence', '02.03': 'useeffect and cleanup', '02.04': 'useref and mutable coordination', '02.05': 'abortcontroller and stale requests', '02.06': 'session generations and race prevention', '02.07': 'timeout budgets and http failure taxonomy', '02.08': 'idempotency and safe retry decisions', '02.09': 'exponential backoff and jitter', '02.10': 'circuit breaker states', '02.11': 'graceful degradation and incident diagnosis'}
 
-# A transient failure can be retried. A permanent failure should not be retried forever.
-attempts = 0
 
-def flaky_service():
-    global attempts
-    attempts += 1
-    if attempts < 3:
-        raise ConnectionError("temporary dependency outage")
-    return "Todo notification accepted"
+def demonstrate():
+    """Show a small working example, an observed failure, and a design lesson."""
+    import random
+    random.seed(7)
+    for attempt in range(1, 5):
+        delay = min(0.1 * 2 ** (attempt - 1), 1.0)
+        jitter = random.uniform(0, delay / 2)
+        print(f'attempt={attempt} planned_backoff={delay + jitter:.3f}s')
+    print('FAILURE: blind retries can amplify overload; bound attempts and use idempotency')
 
-for attempt in range(1, 5):
-    try:
-        print("SUCCESS:", flaky_service(), "on attempt", attempt)
-        break
-    except ConnectionError as error:
-        print("EXPECTED FAILURE:", error)
-        if attempt == 4:
-            raise
-        delay = 0.05 * (2 ** (attempt - 1))  # Small exponential backoff for demo.
-        print("RETRY after", round(delay, 3), "seconds")
-        time.sleep(delay)
-print("TRADE-OFF: retrying non-idempotent writes may create duplicates.")
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--list', action='store_true', help='List lesson identifiers')
+    parser.add_argument('--lesson', choices=list(LESSONS), help='Focus the experiment on one lesson')
+    args = parser.parse_args()
+    if args.list:
+        for key, topic in LESSONS.items():
+            print(key, topic)
+        return
+    if args.lesson:
+        print('LESSON:', args.lesson, LESSONS[args.lesson])
+    else:
+        print('MODULE 02: Application Lifecycle And Resilience')
+    print('LAB: Retries and timeouts')
+    demonstrate()
+    print('ARCHITECTURE LESSON: Retries are only safe when the operation is idempotent or deduplicated.')
+    print('EVIDENCE: this was a standalone local exercise, not a production deployment')
+
+
+if __name__ == '__main__':
+    main()

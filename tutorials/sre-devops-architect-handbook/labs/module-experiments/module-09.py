@@ -1,26 +1,46 @@
 #!/usr/bin/env python3
-"""Module 09 — Infrastructure as Code drift.
+"""Module 09: Infrastructure As Code. Safe Python 3 standard-library learning lab.
 
-Standalone educational experiment for the Todo SRE/DevOps Architect handbook.
-Run: python3 tutorials/sre-devops-architect-handbook/labs/module-experiments/module-09.py
+Usage:
+  python3 module-09.py
+  python3 module-09.py --list
+  python3 module-09.py --lesson 09.01
 
-Learning flow:
-  1. Read the comments and predict the output.
-  2. Run the healthy case and inspect the output.
-  3. Observe the explicitly labeled simulated failure.
-  4. Explain the recovery and production limitations.
-
-This script does not modify the Todo application's code or database.
+The lab is a teaching model; it does NOT deploy infrastructure or modify Todo.
 """
+import argparse
 
-# Desired configuration is declarative; actual configuration can drift.
-desired = {"replicas": 2, "port": 8000, "tls": True}
-actual = {"replicas": 1, "port": 8000, "tls": False}
+LESSONS = {'09.01': 'declarative infrastructure', '09.02': 'terraform providers and resources', '09.03': 'variables outputs locals', '09.04': 'state and state locking', '09.05': 'plan apply destroy lifecycle', '09.06': 'remote state and encryption', '09.07': 'modules and composition', '09.08': 'environment separation', '09.09': 'drift detection', '09.10': 'least privilege for automation', '09.11': 'policy checks and cost awareness'}
 
-def diff(wanted, observed):
-    return {key: (wanted[key], observed.get(key)) for key in wanted if wanted[key] != observed.get(key)}
 
-print("EXPECTED FAILURE: configuration drift =", diff(desired, actual))
-actual.update(desired)  # Simulated reconciliation; no cloud resources changed.
-print("RECOVERY: drift after reconciliation =", diff(desired, actual))
-print("TRADE-OFF: IaC plans require review before applying destructive changes.")
+def demonstrate():
+    """Show a small working example, an observed failure, and a design lesson."""
+    desired = {'replicas': 2, 'region': 'local', 'encrypted': True}
+    actual = {'replicas': 1, 'region': 'local', 'encrypted': True}
+    for key, expected in desired.items():
+        if actual.get(key) != expected:
+            print('DRIFT:', key, 'actual=', actual.get(key), 'desired=', expected)
+    print('PLAN: review changes before applying')
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--list', action='store_true', help='List lesson identifiers')
+    parser.add_argument('--lesson', choices=list(LESSONS), help='Focus the experiment on one lesson')
+    args = parser.parse_args()
+    if args.list:
+        for key, topic in LESSONS.items():
+            print(key, topic)
+        return
+    if args.lesson:
+        print('LESSON:', args.lesson, LESSONS[args.lesson])
+    else:
+        print('MODULE 09: Infrastructure As Code')
+    print('LAB: Configuration drift')
+    demonstrate()
+    print('ARCHITECTURE LESSON: Declarative IaC compares desired and observed state; this is an offline model, not Terraform.')
+    print('EVIDENCE: this was a standalone local exercise, not a production deployment')
+
+
+if __name__ == '__main__':
+    main()

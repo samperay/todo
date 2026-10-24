@@ -1,30 +1,45 @@
 #!/usr/bin/env python3
-"""Module 19 — AI-assisted incident triage with guardrails.
+"""Module 19: Ai For Sre And Devops. Safe Python 3 standard-library learning lab.
 
-Standalone educational experiment for the Todo SRE/DevOps Architect handbook.
-Run: python3 tutorials/sre-devops-architect-handbook/labs/module-experiments/module-19.py
+Usage:
+  python3 module-19.py
+  python3 module-19.py --list
+  python3 module-19.py --lesson 19.01
 
-Learning flow:
-  1. Read the comments and predict the output.
-  2. Run the healthy case and inspect the output.
-  3. Observe the explicitly labeled simulated failure.
-  4. Explain the recovery and production limitations.
-
-This script does not modify the Todo application's code or database.
+The lab is a teaching model; it does NOT deploy infrastructure or modify Todo.
 """
+import argparse
 
-# Rule-based stand-in for an AI assistant: read-only recommendations, no changes.
-incidents = ["HTTP 503 on Todo API", "Queue backlog increasing", "All healthy"]
+LESSONS = {'19.01': 'llm capabilities and limitations', '19.02': 'rag for runbooks and incidents', '19.03': 'tool calling agents and permissions', '19.04': 'prompt and context design', '19.05': 'human in the loop operations', '19.06': 'read only diagnosis before write actions', '19.07': 'evaluation datasets and grounded answers', '19.08': 'prompt injection and tool output trust', '19.09': 'auditability and rollback', '19.10': 'ai assisted incident summarization', '19.11': 'cost and latency controls'}
 
-def suggest(message):
-    text = message.lower()
-    if "503" in text:
-        return "Check upstream readiness, dependencies, and recent deploys"
-    if "backlog" in text:
-        return "Inspect consumer health, message age, and worker throughput"
-    return "No immediate action; continue monitoring"
 
-for incident in incidents:
-    print("SIGNAL:", incident, "| SUGGESTION:", suggest(incident))
-print("FAILURE MODE: recommendations can be wrong or incomplete.")
-print("RECOVERY: human verifies evidence before approving any remediation.")
+def demonstrate():
+    """Show a small working example, an observed failure, and a design lesson."""
+    incident = {'service': 'todo-api', 'status': 503, 'logs': ['upstream unavailable']}
+    recommendation = 'inspect upstream health and timeout budget'
+    print('EVIDENCE:', incident)
+    print('PROPOSED READ-ONLY DIAGNOSIS:', recommendation)
+    print('WRITE ACTION: BLOCKED pending human approval')
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--list', action='store_true', help='List lesson identifiers')
+    parser.add_argument('--lesson', choices=list(LESSONS), help='Focus the experiment on one lesson')
+    args = parser.parse_args()
+    if args.list:
+        for key, topic in LESSONS.items():
+            print(key, topic)
+        return
+    if args.lesson:
+        print('LESSON:', args.lesson, LESSONS[args.lesson])
+    else:
+        print('MODULE 19: Ai For Sre And Devops')
+    print('LAB: Read-only AI operations gate')
+    demonstrate()
+    print('ARCHITECTURE LESSON: LLM output is a hypothesis; verify against evidence before executing changes.')
+    print('EVIDENCE: this was a standalone local exercise, not a production deployment')
+
+
+if __name__ == '__main__':
+    main()

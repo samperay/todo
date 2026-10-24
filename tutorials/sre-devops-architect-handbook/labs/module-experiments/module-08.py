@@ -1,29 +1,44 @@
 #!/usr/bin/env python3
-"""Module 08 — CI pipeline quality gates.
+"""Module 08: Ci Cd And Software Delivery. Safe Python 3 standard-library learning lab.
 
-Standalone educational experiment for the Todo SRE/DevOps Architect handbook.
-Run: python3 tutorials/sre-devops-architect-handbook/labs/module-experiments/module-08.py
+Usage:
+  python3 module-08.py
+  python3 module-08.py --list
+  python3 module-08.py --lesson 08.01
 
-Learning flow:
-  1. Read the comments and predict the output.
-  2. Run the healthy case and inspect the output.
-  3. Observe the explicitly labeled simulated failure.
-  4. Explain the recovery and production limitations.
-
-This script does not modify the Todo application's code or database.
+The lab is a teaching model; it does NOT deploy infrastructure or modify Todo.
 """
+import argparse
 
-import ast
+LESSONS = {'08.01': 'ci versus cd', '08.02': 'git branching and protected main', '08.03': 'ruff mypy and pytest jobs', '08.04': 'frontend lint build test gates', '08.05': 'dependency pinning and caching', '08.06': 'build artifacts and provenance', '08.07': 'container registry workflows', '08.08': 'release tags and semantic versioning', '08.09': 'deployment environments and approvals', '08.10': 'rolling blue green and canary strategies', '08.11': 'rollback and verification', '08.12': 'pipeline threat modeling'}
 
-# A miniature CI gate: syntax checks must pass before a release.
-sources = {"valid.py": "def add(a, b):\n    return a + b\n", "broken.py": "def broken(:\n    pass\n"}
-failed = 0
-for filename, source in sources.items():
-    try:
-        ast.parse(source)
-        print("PASS:", filename)
-    except SyntaxError as error:
-        failed += 1
-        print("EXPECTED FAILURE:", filename, "line", error.lineno)
-print("PIPELINE RESULT:", "BLOCK MERGE" if failed else "ALLOW MERGE")
-print("RECOVERY: fix syntax, rerun gate, then request review.")
+
+def demonstrate():
+    """Show a small working example, an observed failure, and a design lesson."""
+    import subprocess, sys
+    for script in ('print("PASS")', 'raise SystemExit(1)'):
+        r = subprocess.run([sys.executable, '-c', script], capture_output=True, text=True)
+        print('CI STEP:', 'PASS' if r.returncode == 0 else 'FAIL', 'exit=', r.returncode)
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--list', action='store_true', help='List lesson identifiers')
+    parser.add_argument('--lesson', choices=list(LESSONS), help='Focus the experiment on one lesson')
+    args = parser.parse_args()
+    if args.list:
+        for key, topic in LESSONS.items():
+            print(key, topic)
+        return
+    if args.lesson:
+        print('LESSON:', args.lesson, LESSONS[args.lesson])
+    else:
+        print('MODULE 08: Ci Cd And Software Delivery')
+    print('LAB: Quality gate')
+    demonstrate()
+    print('ARCHITECTURE LESSON: CI should block merging when required checks fail.')
+    print('EVIDENCE: this was a standalone local exercise, not a production deployment')
+
+
+if __name__ == '__main__':
+    main()

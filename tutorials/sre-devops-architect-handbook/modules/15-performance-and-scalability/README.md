@@ -1,56 +1,42 @@
-# Module 15 — Performance And Scalability
+# Module 15 — Performance And Scalability (Handbook v3)
 
-**Scope:** Latency percentiles and load.  
-**Status:** Guided learning; verify evidence before marking complete.
+**Purpose:** Learn performance and scalability through small Python experiments and Todo code inspection.  
+**Baseline lab:** [`module-15.py`](../../labs/module-experiments/module-15.py)  
+**Status:** Planned/guided; no module is complete until individual exercises are verified.
 
-## Why it matters
+## V4 learning companion: analogy, concept and observations
 
-This module connects the running Todo application with **Performance And Scalability**. Begin with a dependency-free simulation, then investigate the actual application or local infrastructure. A simulated result is not evidence of a deployed production capability.
+Each linked lesson now includes **1. Real-world analogy**, **2. Understanding the core concept** (for `03.02`, **Understanding `queue.Queue`**), and **4. What to Observe**. These sections supplement the existing explanations, commands, expected outputs, failure labs and knowledge checks; they do not replace them.
 
-## Prerequisites
+**Start here:** Open the first lesson in the table below, read the new sections, run `python3 tutorials/sre-devops-architect-handbook/labs/module-experiments/module-15.py --lesson NN.MM` (substitute that lesson's actual ID), and record the observed results. The shared module experiment is not proof of every lesson's real-world technology.
 
-- Python 3, Git, Todo repository checked out on the intended branch.
-- Read [environment setup](../../labs/ENVIRONMENT_SETUP.md) and [architecture baseline](../../architecture/CURRENT_AND_TARGET.md).
-- Optional infrastructure tools are introduced only when their lessons require them.
+## Start here
 
-## Baseline lab — executable
-
-From the Todo repository root:
+From the repository root:
 
 ```bash
-pwd
-git status --short
+python3 tutorials/sre-devops-architect-handbook/labs/module-experiments/module-15.py --list
 python3 tutorials/sre-devops-architect-handbook/labs/module-experiments/module-15.py
 ```
 
-**Expected:** A successful baseline observation plus a bounded failure/recovery demonstration for **Latency percentiles and load**. The experiment does not modify Todo application code. A `SKIP` line means a prerequisite is absent; do not report the corresponding infrastructure as tested.
+Run only one lesson at a time. `--lesson NN.MM` prints the lesson focus and executes the shared module demonstration. **The shared demonstration is a foundation, not a separate full implementation for every topic.** The Markdown lesson adds the topic-specific inspection, discussion and architecture review.
 
-**Failure:** The experiment includes a labeled failure case. Explain the symptom, scope, and recovery; for real infrastructure, do not induce outages without an approved disposable environment.
+## Lessons
 
-## Lessons and exercises
-
-| Lesson | Focus | Executable foundation |
-|---|---|---|
-| [15.01-latency-versus-throughput](lessons/15.01-latency-versus-throughput.md) | Latency versus throughput | Run `python3 tutorials/sre-devops-architect-handbook/labs/module-experiments/module-15.py` and answer topic questions |
-| [15.02-concurrency-and-queueing](lessons/15.02-concurrency-and-queueing.md) | Concurrency and queueing | Run `python3 tutorials/sre-devops-architect-handbook/labs/module-experiments/module-15.py` and answer topic questions |
-| [15.03-baseline-and-reproducibility](lessons/15.03-baseline-and-reproducibility.md) | Baseline and reproducibility | Run `python3 tutorials/sre-devops-architect-handbook/labs/module-experiments/module-15.py` and answer topic questions |
-| [15.04-load-generators-and-safe-limits](lessons/15.04-load-generators-and-safe-limits.md) | Load generators and safe limits | Run `python3 tutorials/sre-devops-architect-handbook/labs/module-experiments/module-15.py` and answer topic questions |
-| [15.05-p50-p95-p99-latency](lessons/15.05-p50-p95-p99-latency.md) | p50/p95/p99 latency | Run `python3 tutorials/sre-devops-architect-handbook/labs/module-experiments/module-15.py` and answer topic questions |
-| [15.06-python-profiling](lessons/15.06-python-profiling.md) | Python profiling | Run `python3 tutorials/sre-devops-architect-handbook/labs/module-experiments/module-15.py` and answer topic questions |
-| [15.07-database-query-analysis](lessons/15.07-database-query-analysis.md) | Database query analysis | Run `python3 tutorials/sre-devops-architect-handbook/labs/module-experiments/module-15.py` and answer topic questions |
-| [15.08-caching-and-invalidation](lessons/15.08-caching-and-invalidation.md) | Caching and invalidation | Run `python3 tutorials/sre-devops-architect-handbook/labs/module-experiments/module-15.py` and answer topic questions |
-| [15.09-rate-limiting-and-overload](lessons/15.09-rate-limiting-and-overload.md) | Rate limiting and overload | Run `python3 tutorials/sre-devops-architect-handbook/labs/module-experiments/module-15.py` and answer topic questions |
-| [15.10-capacity-estimates](lessons/15.10-capacity-estimates.md) | Capacity estimates | Run `python3 tutorials/sre-devops-architect-handbook/labs/module-experiments/module-15.py` and answer topic questions |
-| [15.11-autoscaling-trade-offs](lessons/15.11-autoscaling-trade-offs.md) | Autoscaling trade-offs | Run `python3 tutorials/sre-devops-architect-handbook/labs/module-experiments/module-15.py` and answer topic questions |
-
-## Production application exercise
-
-1. Inspect relevant current Todo files and record exact paths; use the real source as the authority.
-2. Draw a component diagram showing request path, state boundary, and failure domain.
-3. State which features exist now and which are only proposed.
-4. Create a small spec and ADR before changing Todo; validate with CI and a rollback plan.
-5. Add evidence to [learning log](../../progress/LEARNING_LOG.md).
+| Lesson | Command |
+|---|---|
+| [15.01 — latency versus throughput](lessons/15.01-latency-versus-throughput.md) | `python3 .../module-15.py --lesson 15.01` |
+| [15.02 — concurrency and queueing](lessons/15.02-concurrency-and-queueing.md) | `python3 .../module-15.py --lesson 15.02` |
+| [15.03 — baseline and reproduCIbility](lessons/15.03-baseline-and-reproducibility.md) | `python3 .../module-15.py --lesson 15.03` |
+| [15.04 — load generators and safe limits](lessons/15.04-load-generators-and-safe-limits.md) | `python3 .../module-15.py --lesson 15.04` |
+| [15.05 — p50 p95 p99 latency](lessons/15.05-p50-p95-p99-latency.md) | `python3 .../module-15.py --lesson 15.05` |
+| [15.06 — python profiling](lessons/15.06-python-profiling.md) | `python3 .../module-15.py --lesson 15.06` |
+| [15.07 — database query analysis](lessons/15.07-database-query-analysis.md) | `python3 .../module-15.py --lesson 15.07` |
+| [15.08 — caching and invalidation](lessons/15.08-caching-and-invalidation.md) | `python3 .../module-15.py --lesson 15.08` |
+| [15.09 — rate limiting and overload](lessons/15.09-rate-limiting-and-overload.md) | `python3 .../module-15.py --lesson 15.09` |
+| [15.10 — capaCIty estimates](lessons/15.10-capacity-estimates.md) | `python3 .../module-15.py --lesson 15.10` |
+| [15.11 — autoscaling trade offs](lessons/15.11-autoscaling-trade-offs.md) | `python3 .../module-15.py --lesson 15.11` |
 
 ## Completion gate
 
-A module is complete only after its individual topic questions are answered and at least one actual Todo-related lab has independently verified evidence. Running the common module experiment alone does **not** complete all lessons.
+For each lesson: understand the concept, inspect actual Todo code, run the lab, discuss a failure/recovery, and record the output. Infrastructure experiments are offline models unless explicitly labeled otherwise.

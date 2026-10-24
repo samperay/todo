@@ -1,57 +1,43 @@
-# Module 13 — Observability Engineering
+# Module 13 — Observability Engineering (Handbook v3)
 
-**Scope:** Prometheus metric semantics.  
-**Status:** Guided learning; verify evidence before marking complete.
+**Purpose:** Learn observability engineering through small Python experiments and Todo code inspection.  
+**Baseline lab:** [`module-13.py`](../../labs/module-experiments/module-13.py)  
+**Status:** Planned/guided; no module is complete until individual exercises are verified.
 
-## Why it matters
+## V4 learning companion: analogy, concept and observations
 
-This module connects the running Todo application with **Observability Engineering**. Begin with a dependency-free simulation, then investigate the actual application or local infrastructure. A simulated result is not evidence of a deployed production capability.
+Each linked lesson now includes **1. Real-world analogy**, **2. Understanding the core concept** (for `03.02`, **Understanding `queue.Queue`**), and **4. What to Observe**. These sections supplement the existing explanations, commands, expected outputs, failure labs and knowledge checks; they do not replace them.
 
-## Prerequisites
+**Start here:** Open the first lesson in the table below, read the new sections, run `python3 tutorials/sre-devops-architect-handbook/labs/module-experiments/module-13.py --lesson NN.MM` (substitute that lesson's actual ID), and record the observed results. The shared module experiment is not proof of every lesson's real-world technology.
 
-- Python 3, Git, Todo repository checked out on the intended branch.
-- Read [environment setup](../../labs/ENVIRONMENT_SETUP.md) and [architecture baseline](../../architecture/CURRENT_AND_TARGET.md).
-- Optional infrastructure tools are introduced only when their lessons require them.
+## Start here
 
-## Baseline lab — executable
-
-From the Todo repository root:
+From the repository root:
 
 ```bash
-pwd
-git status --short
+python3 tutorials/sre-devops-architect-handbook/labs/module-experiments/module-13.py --list
 python3 tutorials/sre-devops-architect-handbook/labs/module-experiments/module-13.py
 ```
 
-**Expected:** A successful baseline observation plus a bounded failure/recovery demonstration for **Prometheus metric semantics**. The experiment does not modify Todo application code. A `SKIP` line means a prerequisite is absent; do not report the corresponding infrastructure as tested.
+Run only one lesson at a time. `--lesson NN.MM` prints the lesson focus and executes the shared module demonstration. **The shared demonstration is a foundation, not a separate full implementation for every topic.** The Markdown lesson adds the topic-specific inspection, discussion and architecture review.
 
-**Failure:** The experiment includes a labeled failure case. Explain the symptom, scope, and recovery; for real infrastructure, do not induce outages without an approved disposable environment.
+## Lessons
 
-## Lessons and exercises
-
-| Lesson | Focus | Executable foundation |
-|---|---|---|
-| [13.01-three-pillars-and-their-limitations](lessons/13.01-three-pillars-and-their-limitations.md) | Three pillars and their limitations | Run `python3 tutorials/sre-devops-architect-handbook/labs/module-experiments/module-13.py` and answer topic questions |
-| [13.02-existing-metrics-endpoint-and-exposition-format](lessons/13.02-existing-metrics-endpoint-and-exposition-format.md) | Existing /metrics endpoint and exposition format | Run `python3 tutorials/sre-devops-architect-handbook/labs/module-experiments/module-13.py` and answer topic questions |
-| [13.03-counters-gauges-histograms](lessons/13.03-counters-gauges-histograms.md) | Counters, gauges, histograms | Run `python3 tutorials/sre-devops-architect-handbook/labs/module-experiments/module-13.py` and answer topic questions |
-| [13.04-red-and-use-methods](lessons/13.04-red-and-use-methods.md) | RED and USE methods | Run `python3 tutorials/sre-devops-architect-handbook/labs/module-experiments/module-13.py` and answer topic questions |
-| [13.05-label-cardinality](lessons/13.05-label-cardinality.md) | Label cardinality | Run `python3 tutorials/sre-devops-architect-handbook/labs/module-experiments/module-13.py` and answer topic questions |
-| [13.06-promql-rates-and-quantiles](lessons/13.06-promql-rates-and-quantiles.md) | PromQL rates and quantiles | Run `python3 tutorials/sre-devops-architect-handbook/labs/module-experiments/module-13.py` and answer topic questions |
-| [13.07-grafana-dashboards](lessons/13.07-grafana-dashboards.md) | Grafana dashboards | Run `python3 tutorials/sre-devops-architect-handbook/labs/module-experiments/module-13.py` and answer topic questions |
-| [13.08-structured-application-logging](lessons/13.08-structured-application-logging.md) | Structured application logging | Run `python3 tutorials/sre-devops-architect-handbook/labs/module-experiments/module-13.py` and answer topic questions |
-| [13.09-trace-and-span-fundamentals](lessons/13.09-trace-and-span-fundamentals.md) | Trace and span fundamentals | Run `python3 tutorials/sre-devops-architect-handbook/labs/module-experiments/module-13.py` and answer topic questions |
-| [13.10-opentelemetry-instrumentation](lessons/13.10-opentelemetry-instrumentation.md) | OpenTelemetry instrumentation | Run `python3 tutorials/sre-devops-architect-handbook/labs/module-experiments/module-13.py` and answer topic questions |
-| [13.11-alerting-and-noise-reduction](lessons/13.11-alerting-and-noise-reduction.md) | Alerting and noise reduction | Run `python3 tutorials/sre-devops-architect-handbook/labs/module-experiments/module-13.py` and answer topic questions |
-| [13.12-operational-runbooks](lessons/13.12-operational-runbooks.md) | Operational runbooks | Run `python3 tutorials/sre-devops-architect-handbook/labs/module-experiments/module-13.py` and answer topic questions |
-
-## Production application exercise
-
-1. Inspect relevant current Todo files and record exact paths; use the real source as the authority.
-2. Draw a component diagram showing request path, state boundary, and failure domain.
-3. State which features exist now and which are only proposed.
-4. Create a small spec and ADR before changing Todo; validate with CI and a rollback plan.
-5. Add evidence to [learning log](../../progress/LEARNING_LOG.md).
+| Lesson | Command |
+|---|---|
+| [13.01 — three pillars and their limitations](lessons/13.01-three-pillars-and-their-limitations.md) | `python3 .../module-13.py --lesson 13.01` |
+| [13.02 — existing metrics endpoint and exposition format](lessons/13.02-existing-metrics-endpoint-and-exposition-format.md) | `python3 .../module-13.py --lesson 13.02` |
+| [13.03 — counters gauges histograms](lessons/13.03-counters-gauges-histograms.md) | `python3 .../module-13.py --lesson 13.03` |
+| [13.04 — red and use methods](lessons/13.04-red-and-use-methods.md) | `python3 .../module-13.py --lesson 13.04` |
+| [13.05 — label cardinality](lessons/13.05-label-cardinality.md) | `python3 .../module-13.py --lesson 13.05` |
+| [13.06 — promql rates and quantiles](lessons/13.06-promql-rates-and-quantiles.md) | `python3 .../module-13.py --lesson 13.06` |
+| [13.07 — grafana dashboards](lessons/13.07-grafana-dashboards.md) | `python3 .../module-13.py --lesson 13.07` |
+| [13.08 — structured application logging](lessons/13.08-structured-application-logging.md) | `python3 .../module-13.py --lesson 13.08` |
+| [13.09 — trace and span fundamentals](lessons/13.09-trace-and-span-fundamentals.md) | `python3 .../module-13.py --lesson 13.09` |
+| [13.10 — opentelemetry instrumentation](lessons/13.10-opentelemetry-instrumentation.md) | `python3 .../module-13.py --lesson 13.10` |
+| [13.11 — alerting and noise reduction](lessons/13.11-alerting-and-noise-reduction.md) | `python3 .../module-13.py --lesson 13.11` |
+| [13.12 — operational runbooks](lessons/13.12-operational-runbooks.md) | `python3 .../module-13.py --lesson 13.12` |
 
 ## Completion gate
 
-A module is complete only after its individual topic questions are answered and at least one actual Todo-related lab has independently verified evidence. Running the common module experiment alone does **not** complete all lessons.
+For each lesson: understand the concept, inspect actual Todo code, run the lab, discuss a failure/recovery, and record the output. Infrastructure experiments are offline models unless explicitly labeled otherwise.

@@ -1,33 +1,52 @@
 #!/usr/bin/env python3
-"""Module 04 — Database transactions and rollback.
+"""Module 04: Backend Architecture And Database Engineering. Safe Python 3 standard-library learning lab.
 
-Standalone educational experiment for the Todo SRE/DevOps Architect handbook.
-Run: python3 tutorials/sre-devops-architect-handbook/labs/module-experiments/module-04.py
+Usage:
+  python3 module-04.py
+  python3 module-04.py --list
+  python3 module-04.py --lesson 04.01
 
-Learning flow:
-  1. Read the comments and predict the output.
-  2. Run the healthy case and inspect the output.
-  3. Observe the explicitly labeled simulated failure.
-  4. Explain the recovery and production limitations.
-
-This script does not modify the Todo application's code or database.
+The lab is a teaching model; it does NOT deploy infrastructure or modify Todo.
 """
+import argparse
 
-import sqlite3
+LESSONS = {'04.01': 'fastapi request lifecycle', '04.02': 'route versus service versus repository', '04.03': 'pydantic v2 typed contracts', '04.04': 'authentication and authorization boundaries', '04.05': 'sqlalchemy sessions and transactions', '04.06': 'sqlite locking and concurrency', '04.07': 'schema evolution without alembic', '04.08': 'indexes and query plans', '04.09': 'data integrity and uniqueness', '04.10': 'api error contracts', '04.11': 'dependency injection and testability', '04.12': 'architecture review for database migration'}
 
-# :memory: creates a disposable SQLite database, not the real Todo database.
-db = sqlite3.connect(":memory:")
-db.execute("CREATE TABLE todos (id INTEGER PRIMARY KEY, title TEXT NOT NULL)")
-with db:
-    db.execute("INSERT INTO todos VALUES (1, 'Read architecture')")
-print("SUCCESS: rows =", db.execute("SELECT COUNT(*) FROM todos").fetchone()[0])
 
-# Failure: duplicate primary key forces a rollback of the transaction.
-try:
-    with db:
-        db.execute("INSERT INTO todos VALUES (2, 'Temporary')")
-        db.execute("INSERT INTO todos VALUES (1, 'Duplicate')")
-except sqlite3.IntegrityError as error:
-    print("EXPECTED FAILURE:", type(error).__name__)
-print("RECOVERY: rows after rollback =", db.execute("SELECT COUNT(*) FROM todos").fetchone()[0])
-db.close()
+def demonstrate():
+    """Show a small working example, an observed failure, and a design lesson."""
+    import sqlite3
+    connection = sqlite3.connect(':memory:')
+    connection.execute('CREATE TABLE todo (id INTEGER PRIMARY KEY, title TEXT NOT NULL)')
+    connection.execute("INSERT INTO todo VALUES (1, 'read')")
+    connection.commit()
+    try:
+        with connection:
+            connection.execute("INSERT INTO todo VALUES (2, 'write')")
+            raise RuntimeError('simulated transaction failure')
+    except RuntimeError as error:
+        print('EXPECTED FAILURE:', error)
+    print('ROWS AFTER ROLLBACK:', connection.execute('SELECT * FROM todo').fetchall())
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--list', action='store_true', help='List lesson identifiers')
+    parser.add_argument('--lesson', choices=list(LESSONS), help='Focus the experiment on one lesson')
+    args = parser.parse_args()
+    if args.list:
+        for key, topic in LESSONS.items():
+            print(key, topic)
+        return
+    if args.lesson:
+        print('LESSON:', args.lesson, LESSONS[args.lesson])
+    else:
+        print('MODULE 04: Backend Architecture And Database Engineering')
+    print('LAB: SQLite transaction')
+    demonstrate()
+    print('ARCHITECTURE LESSON: Transaction rollback preserves committed data and discards uncommitted changes.')
+    print('EVIDENCE: this was a standalone local exercise, not a production deployment')
+
+
+if __name__ == '__main__':
+    main()

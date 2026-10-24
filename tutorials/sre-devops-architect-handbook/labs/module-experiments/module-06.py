@@ -1,40 +1,47 @@
 #!/usr/bin/env python3
-"""Module 06 — TCP connectivity and timeouts.
+"""Module 06: Networking And Api Architecture. Safe Python 3 standard-library learning lab.
 
-Standalone educational experiment for the Todo SRE/DevOps Architect handbook.
-Run: python3 tutorials/sre-devops-architect-handbook/labs/module-experiments/module-06.py
+Usage:
+  python3 module-06.py
+  python3 module-06.py --list
+  python3 module-06.py --lesson 06.01
 
-Learning flow:
-  1. Read the comments and predict the output.
-  2. Run the healthy case and inspect the output.
-  3. Observe the explicitly labeled simulated failure.
-  4. Explain the recovery and production limitations.
-
-This script does not modify the Todo application's code or database.
+The lab is a teaching model; it does NOT deploy infrastructure or modify Todo.
 """
+import argparse
 
-import socket
-from threading import Thread
+LESSONS = {'06.01': 'tcp handshake and ports', '06.02': 'loopback versus bind all addresses', '06.03': 'dns resolution and caching', '06.04': 'http methods headers and status', '06.05': 'tls certificates and trust chains', '06.06': 'reverse proxies and upstreams', '06.07': 'cors and same origin policy', '06.08': 'api gateways and rate limiting', '06.09': 'load balancing and health checks', '06.10': 'network failure diagnostics', '06.11': 'request tracing across hops'}
 
-# Bind an ephemeral loopback port; no real Todo service is changed.
-server = socket.socket()
-server.bind(("127.0.0.1", 0))
-server.listen(1)
-port = server.getsockname()[1]
 
-def serve_once():
-    connection, _ = server.accept()
-    with connection:
-        connection.sendall(b"hello from server")
-    server.close()
+def demonstrate():
+    """Show a small working example, an observed failure, and a design lesson."""
+    import socket
+    for port in (8000, 65534):
+        try:
+            with socket.create_connection(('127.0.0.1', port), timeout=1):
+                print('CONNECTED:', port)
+        except OSError as error:
+            print('CONNECTION FAILURE:', port, type(error).__name__)
 
-thread = Thread(target=serve_once)
-thread.start()
-with socket.create_connection(("127.0.0.1", port), timeout=2) as client:
-    print("SUCCESS:", client.recv(1024).decode())
-thread.join()
-try:
-    socket.create_connection(("127.0.0.1", port), timeout=1)
-except OSError as error:
-    print("EXPECTED FAILURE: listener closed:", type(error).__name__)
-print("RECOVERY: restore the listener and verify TCP connectivity.")
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--list', action='store_true', help='List lesson identifiers')
+    parser.add_argument('--lesson', choices=list(LESSONS), help='Focus the experiment on one lesson')
+    args = parser.parse_args()
+    if args.list:
+        for key, topic in LESSONS.items():
+            print(key, topic)
+        return
+    if args.lesson:
+        print('LESSON:', args.lesson, LESSONS[args.lesson])
+    else:
+        print('MODULE 06: Networking And Api Architecture')
+    print('LAB: TCP connection')
+    demonstrate()
+    print('ARCHITECTURE LESSON: A failed TCP connection is not the same as an HTTP 401/500 response.')
+    print('EVIDENCE: this was a standalone local exercise, not a production deployment')
+
+
+if __name__ == '__main__':
+    main()

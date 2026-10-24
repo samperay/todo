@@ -1,56 +1,42 @@
-# Module 07 — Containerization
+# Module 07 — Containerization (Handbook v3)
 
-**Scope:** Container runtime inspection.  
-**Status:** Guided learning; verify evidence before marking complete.
+**Purpose:** Learn containerization through small Python experiments and Todo code inspection.  
+**Baseline lab:** [`module-07.py`](../../labs/module-experiments/module-07.py)  
+**Status:** Planned/guided; no module is complete until individual exercises are verified.
 
-## Why it matters
+## V4 learning companion: analogy, concept and observations
 
-This module connects the running Todo application with **Containerization**. Begin with a dependency-free simulation, then investigate the actual application or local infrastructure. A simulated result is not evidence of a deployed production capability.
+Each linked lesson now includes **1. Real-world analogy**, **2. Understanding the core concept** (for `03.02`, **Understanding `queue.Queue`**), and **4. What to Observe**. These sections supplement the existing explanations, commands, expected outputs, failure labs and knowledge checks; they do not replace them.
 
-## Prerequisites
+**Start here:** Open the first lesson in the table below, read the new sections, run `python3 tutorials/sre-devops-architect-handbook/labs/module-experiments/module-07.py --lesson NN.MM` (substitute that lesson's actual ID), and record the observed results. The shared module experiment is not proof of every lesson's real-world technology.
 
-- Python 3, Git, Todo repository checked out on the intended branch.
-- Read [environment setup](../../labs/ENVIRONMENT_SETUP.md) and [architecture baseline](../../architecture/CURRENT_AND_TARGET.md).
-- Optional infrastructure tools are introduced only when their lessons require them.
+## Start here
 
-## Baseline lab — executable
-
-From the Todo repository root:
+From the repository root:
 
 ```bash
-pwd
-git status --short
+python3 tutorials/sre-devops-architect-handbook/labs/module-experiments/module-07.py --list
 python3 tutorials/sre-devops-architect-handbook/labs/module-experiments/module-07.py
 ```
 
-**Expected:** A successful baseline observation plus a bounded failure/recovery demonstration for **Container runtime inspection**. The experiment does not modify Todo application code. A `SKIP` line means a prerequisite is absent; do not report the corresponding infrastructure as tested.
+Run only one lesson at a time. `--lesson NN.MM` prints the lesson focus and executes the shared module demonstration. **The shared demonstration is a foundation, not a separate full implementation for every topic.** The Markdown lesson adds the topic-specific inspection, discussion and architecture review.
 
-**Failure:** The experiment includes a labeled failure case. Explain the symptom, scope, and recovery; for real infrastructure, do not induce outages without an approved disposable environment.
+## Lessons
 
-## Lessons and exercises
-
-| Lesson | Focus | Executable foundation |
-|---|---|---|
-| [07.01-containers-versus-virtual-machines](lessons/07.01-containers-versus-virtual-machines.md) | Containers versus virtual machines | Run `python3 tutorials/sre-devops-architect-handbook/labs/module-experiments/module-07.py` and answer topic questions |
-| [07.02-dockerfile-layers-and-build-cache](lessons/07.02-dockerfile-layers-and-build-cache.md) | Dockerfile layers and build cache | Run `python3 tutorials/sre-devops-architect-handbook/labs/module-experiments/module-07.py` and answer topic questions |
-| [07.03-multi-stage-react-build](lessons/07.03-multi-stage-react-build.md) | Multi-stage React build | Run `python3 tutorials/sre-devops-architect-handbook/labs/module-experiments/module-07.py` and answer topic questions |
-| [07.04-fastapi-container-image](lessons/07.04-fastapi-container-image.md) | FastAPI container image | Run `python3 tutorials/sre-devops-architect-handbook/labs/module-experiments/module-07.py` and answer topic questions |
-| [07.05-port-publishing-and-container-dns](lessons/07.05-port-publishing-and-container-dns.md) | Port publishing and container DNS | Run `python3 tutorials/sre-devops-architect-handbook/labs/module-experiments/module-07.py` and answer topic questions |
-| [07.06-compose-services-and-networks](lessons/07.06-compose-services-and-networks.md) | Compose services and networks | Run `python3 tutorials/sre-devops-architect-handbook/labs/module-experiments/module-07.py` and answer topic questions |
-| [07.07-volumes-and-sqlite-persistence](lessons/07.07-volumes-and-sqlite-persistence.md) | Volumes and SQLite persistence | Run `python3 tutorials/sre-devops-architect-handbook/labs/module-experiments/module-07.py` and answer topic questions |
-| [07.08-environment-variables-and-secrets](lessons/07.08-environment-variables-and-secrets.md) | Environment variables and secrets | Run `python3 tutorials/sre-devops-architect-handbook/labs/module-experiments/module-07.py` and answer topic questions |
-| [07.09-health-checks-and-startup-dependencies](lessons/07.09-health-checks-and-startup-dependencies.md) | Health checks and startup dependencies | Run `python3 tutorials/sre-devops-architect-handbook/labs/module-experiments/module-07.py` and answer topic questions |
-| [07.10-image-scanning-and-non-root-users](lessons/07.10-image-scanning-and-non-root-users.md) | Image scanning and non-root users | Run `python3 tutorials/sre-devops-architect-handbook/labs/module-experiments/module-07.py` and answer topic questions |
-| [07.11-container-debugging-and-logs](lessons/07.11-container-debugging-and-logs.md) | Container debugging and logs | Run `python3 tutorials/sre-devops-architect-handbook/labs/module-experiments/module-07.py` and answer topic questions |
-
-## Production application exercise
-
-1. Inspect relevant current Todo files and record exact paths; use the real source as the authority.
-2. Draw a component diagram showing request path, state boundary, and failure domain.
-3. State which features exist now and which are only proposed.
-4. Create a small spec and ADR before changing Todo; validate with CI and a rollback plan.
-5. Add evidence to [learning log](../../progress/LEARNING_LOG.md).
+| Lesson | Command |
+|---|---|
+| [07.01 — containers versus virtual machines](lessons/07.01-containers-versus-virtual-machines.md) | `python3 .../module-07.py --lesson 07.01` |
+| [07.02 — dockerfile layers and build cache](lessons/07.02-dockerfile-layers-and-build-cache.md) | `python3 .../module-07.py --lesson 07.02` |
+| [07.03 — multi stage react build](lessons/07.03-multi-stage-react-build.md) | `python3 .../module-07.py --lesson 07.03` |
+| [07.04 — fastAPI container image](lessons/07.04-fastapi-container-image.md) | `python3 .../module-07.py --lesson 07.04` |
+| [07.05 — port publishing and container dns](lessons/07.05-port-publishing-and-container-dns.md) | `python3 .../module-07.py --lesson 07.05` |
+| [07.06 — compose services and networks](lessons/07.06-compose-services-and-networks.md) | `python3 .../module-07.py --lesson 07.06` |
+| [07.07 — volumes and SQLite persistence](lessons/07.07-volumes-and-sqlite-persistence.md) | `python3 .../module-07.py --lesson 07.07` |
+| [07.08 — environment variables and secrets](lessons/07.08-environment-variables-and-secrets.md) | `python3 .../module-07.py --lesson 07.08` |
+| [07.09 — health checks and startup dependenCIes](lessons/07.09-health-checks-and-startup-dependencies.md) | `python3 .../module-07.py --lesson 07.09` |
+| [07.10 — image scanning and non root users](lessons/07.10-image-scanning-and-non-root-users.md) | `python3 .../module-07.py --lesson 07.10` |
+| [07.11 — container debugging and logs](lessons/07.11-container-debugging-and-logs.md) | `python3 .../module-07.py --lesson 07.11` |
 
 ## Completion gate
 
-A module is complete only after its individual topic questions are answered and at least one actual Todo-related lab has independently verified evidence. Running the common module experiment alone does **not** complete all lessons.
+For each lesson: understand the concept, inspect actual Todo code, run the lab, discuss a failure/recovery, and record the output. Infrastructure experiments are offline models unless explicitly labeled otherwise.

@@ -1,29 +1,45 @@
 #!/usr/bin/env python3
-"""Module 12 — Cloud availability zones and failover.
+"""Module 12: Cloud Architecture. Safe Python 3 standard-library learning lab.
 
-Standalone educational experiment for the Todo SRE/DevOps Architect handbook.
-Run: python3 tutorials/sre-devops-architect-handbook/labs/module-experiments/module-12.py
+Usage:
+  python3 module-12.py
+  python3 module-12.py --list
+  python3 module-12.py --lesson 12.01
 
-Learning flow:
-  1. Read the comments and predict the output.
-  2. Run the healthy case and inspect the output.
-  3. Observe the explicitly labeled simulated failure.
-  4. Explain the recovery and production limitations.
-
-This script does not modify the Todo application's code or database.
+The lab is a teaching model; it does NOT deploy infrastructure or modify Todo.
 """
+import argparse
 
-# An availability zone is a failure domain; this is a model, not cloud API usage.
-zones = {"zone-a": True, "zone-b": True}
+LESSONS = {'12.01': 'regions availability zones and failure domains', '12.02': 'vpc and subnet design', '12.03': 'routing nat and firewalls', '12.04': 'iam identities and least privilege', '12.05': 'compute selection vms containers serverless', '12.06': 'managed database trade offs', '12.07': 'object storage and backup', '12.08': 'load balancers and dns', '12.09': 'secrets and key management', '12.10': 'cost and tagging', '12.11': 'well architected review'}
 
-def available_zone():
-    return next((name for name, healthy in zones.items() if healthy), None)
 
-print("HEALTHY: route to", available_zone())
-zones["zone-a"] = False
-print("EXPECTED FAILURE: zone-a unavailable; fail over to", available_zone())
-zones["zone-b"] = False
-print("OUTAGE: no healthy zones:", available_zone())
-zones["zone-b"] = True
-print("RECOVERY: route to", available_zone())
-print("TRADE-OFF: multi-zone architecture adds cost and data-consistency concerns.")
+def demonstrate():
+    """Show a small working example, an observed failure, and a design lesson."""
+    zones = {'zone-a': True, 'zone-b': True}
+    print('HEALTHY ZONES:', sum(zones.values()))
+    zones['zone-a'] = False
+    print('FAILURE: zone-a down; available zones:', [k for k, ok in zones.items() if ok])
+    print('RECOVERY: route to healthy zone and restore redundancy')
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--list', action='store_true', help='List lesson identifiers')
+    parser.add_argument('--lesson', choices=list(LESSONS), help='Focus the experiment on one lesson')
+    args = parser.parse_args()
+    if args.list:
+        for key, topic in LESSONS.items():
+            print(key, topic)
+        return
+    if args.lesson:
+        print('LESSON:', args.lesson, LESSONS[args.lesson])
+    else:
+        print('MODULE 12: Cloud Architecture')
+    print('LAB: Availability-zone failure')
+    demonstrate()
+    print('ARCHITECTURE LESSON: Availability zones reduce some correlated failures but do not replace backups.')
+    print('EVIDENCE: this was a standalone local exercise, not a production deployment')
+
+
+if __name__ == '__main__':
+    main()

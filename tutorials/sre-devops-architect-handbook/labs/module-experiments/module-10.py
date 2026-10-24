@@ -1,25 +1,47 @@
 #!/usr/bin/env python3
-"""Module 10 — Kubernetes desired-state reconciliation.
+"""Module 10: Kubernetes Fundamentals. Safe Python 3 standard-library learning lab.
 
-Standalone educational experiment for the Todo SRE/DevOps Architect handbook.
-Run: python3 tutorials/sre-devops-architect-handbook/labs/module-experiments/module-10.py
+Usage:
+  python3 module-10.py
+  python3 module-10.py --list
+  python3 module-10.py --lesson 10.01
 
-Learning flow:
-  1. Read the comments and predict the output.
-  2. Run the healthy case and inspect the output.
-  3. Observe the explicitly labeled simulated failure.
-  4. Explain the recovery and production limitations.
-
-This script does not modify the Todo application's code or database.
+The lab is a teaching model; it does NOT deploy infrastructure or modify Todo.
 """
+import argparse
 
-# Kubernetes controllers compare desired replicas with observed replicas.
-desired_replicas = 3
-running_pods = ["pod-a", "pod-b", "pod-c"]
-print("HEALTHY: running =", len(running_pods))
-running_pods.pop()  # Simulate one pod failing.
-print("EXPECTED FAILURE: running =", len(running_pods))
-while len(running_pods) < desired_replicas:
-    running_pods.append(f"replacement-{len(running_pods) + 1}")
-print("RECOVERY: reconciled pods =", running_pods)
-print("NOTE: this is a controller simulation, not a Kubernetes cluster test.")
+LESSONS = {'10.01': 'control plane and worker nodes', '10.02': 'pods and container lifecycle', '10.03': 'deployments and replicasets', '10.04': 'services and dns', '10.05': 'namespaces and labels', '10.06': 'configmaps and secrets', '10.07': 'resource requests and limits', '10.08': 'liveness readiness startup probes', '10.09': 'kubectl describe and logs', '10.10': 'rolling updates and rollback', '10.11': 'persistent storage introduction'}
+
+
+def demonstrate():
+    """Show a small working example, an observed failure, and a design lesson."""
+    desired = 3
+    running = 1
+    print('DESIRED PODS:', desired, 'RUNNING:', running)
+    while running < desired:
+        running += 1
+        print('RECONCILE: scheduled simulated pod', running)
+    print('HEALTHY: replicas match desired state')
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--list', action='store_true', help='List lesson identifiers')
+    parser.add_argument('--lesson', choices=list(LESSONS), help='Focus the experiment on one lesson')
+    args = parser.parse_args()
+    if args.list:
+        for key, topic in LESSONS.items():
+            print(key, topic)
+        return
+    if args.lesson:
+        print('LESSON:', args.lesson, LESSONS[args.lesson])
+    else:
+        print('MODULE 10: Kubernetes Fundamentals')
+    print('LAB: Desired-state reconciliation')
+    demonstrate()
+    print('ARCHITECTURE LESSON: A Kubernetes controller continuously reconciles actual and desired state; no cluster was used.')
+    print('EVIDENCE: this was a standalone local exercise, not a production deployment')
+
+
+if __name__ == '__main__':
+    main()

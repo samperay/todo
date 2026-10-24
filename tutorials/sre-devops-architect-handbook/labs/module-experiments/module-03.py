@@ -1,49 +1,60 @@
 #!/usr/bin/env python3
-"""Module 03 — Producer–consumer queues.
+"""Module 03: Asynchronous Processing And Event Driven Architecture. Safe Python 3 standard-library learning lab.
 
-Standalone educational experiment for the Todo SRE/DevOps Architect handbook.
-Run: python3 tutorials/sre-devops-architect-handbook/labs/module-experiments/module-03.py
+Usage:
+  python3 module-03.py
+  python3 module-03.py --list
+  python3 module-03.py --lesson 03.01
 
-Learning flow:
-  1. Read the comments and predict the output.
-  2. Run the healthy case and inspect the output.
-  3. Observe the explicitly labeled simulated failure.
-  4. Explain the recovery and production limitations.
-
-This script does not modify the Todo application's code or database.
+The lab is a teaching model; it does NOT deploy infrastructure or modify Todo.
 """
+import argparse
 
-from queue import Queue
-from threading import Thread
+LESSONS = {'03.01': 'synchronous versus asynchronous requests', '03.02': 'python queue queue producer consumer', '03.03': 'threads and worker lifecycle', '03.04': 'messages commands and events', '03.05': 'todocompleted event contract', '03.06': 'durability and acknowledgment semantics', '03.07': 'sqlite transactional outbox', '03.08': 'retry policies and poison messages', '03.09': 'dead letter queues and replay', '03.10': 'idempotent consumer and deduplication', '03.11': 'rabbitmq exchange queue routing key', '03.12': 'python publisher and consumer integration', '03.13': 'docker compose multi service topology', '03.14': 'competing consumers and scaling', '03.15': 'queue depth and age observability', '03.16': 'failure injection and recovery', '03.17': 'broker security tls and secrets', '03.18': 'architecture review and delivery guarantees'}
 
-# The producer creates messages; a worker consumes them in another thread.
-messages = Queue()
 
-def worker():
+def demonstrate():
+    """Show a small working example, an observed failure, and a design lesson."""
+    from queue import Queue, Empty
+    q = Queue()
+    for n in range(1, 4):
+        q.put(f'TodoCompleted-{n}')
+        print('PRODUCER queued:', f'TodoCompleted-{n}')
+    print('pending:', q.qsize())
     while True:
-        item = messages.get()  # Wait until an item is available.
         try:
-            if item is None:  # A sentinel asks the worker to stop.
-                return
-            print("CONSUMER processed:", item)
-        finally:
-            messages.task_done()  # Balance every successful get().
+            item = q.get_nowait()
+        except Empty:
+            break
+        print('CONSUMER processed:', item)
+        q.task_done()
+    q.join()
+    print('SUCCESS: queue accounting complete')
+    volatile = Queue()
+    volatile.put('unprocessed-event')
+    print('BEFORE RESTART:', volatile.qsize())
+    volatile = Queue()  # Simulated process restart; memory is replaced.
+    print('AFTER RESTART:', volatile.qsize())
 
-thread = Thread(target=worker)
-thread.start()
-for number in range(1, 4):
-    message = f"TodoCompleted-{number}"
-    messages.put(message)
-    print("PRODUCER queued:", message)
-messages.put(None)
-messages.join()
-thread.join()
-print("SUCCESS: all queued items accounted for")
 
-# Failure: model a process restart by replacing the in-memory queue.
-pending = Queue()
-pending.put("notification-not-yet-processed")
-print("BEFORE RESTART: pending messages =", pending.qsize())
-pending = Queue()  # Simulates loss of volatile state, not a real process crash.
-print("AFTER RESTART: pending messages =", pending.qsize())
-print("RECOVERY DESIGN: persistent outbox or durable broker + idempotent worker.")
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--list', action='store_true', help='List lesson identifiers')
+    parser.add_argument('--lesson', choices=list(LESSONS), help='Focus the experiment on one lesson')
+    args = parser.parse_args()
+    if args.list:
+        for key, topic in LESSONS.items():
+            print(key, topic)
+        return
+    if args.lesson:
+        print('LESSON:', args.lesson, LESSONS[args.lesson])
+    else:
+        print('MODULE 03: Asynchronous Processing And Event Driven Architecture')
+    print('LAB: Queue lifecycle')
+    demonstrate()
+    print('ARCHITECTURE LESSON: get() retrieves/removes work; task_done() updates unfinished-work accounting, not durability.')
+    print('EVIDENCE: this was a standalone local exercise, not a production deployment')
+
+
+if __name__ == '__main__':
+    main()
