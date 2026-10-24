@@ -1,6 +1,6 @@
 # Todo SRE/DevOps Architect — Engineering Handbook
 
-> **Canonical learning index.** Commit this directory under `tutorials/sre-devops-architect-handbook/` in the Todo repository. This is a learning guide and target architecture, **not a claim that every technology is already implemented**.
+> **Canonical learning index.** Commit this directory under `tutorials/sre-devops-architect-handbook/` in the Todo repository. Version 2 includes 20 runnable module experiments and 230 topic-specific lesson exercises. These are foundational simulations and guided investigations, not 230 separate production deployments. This is a learning guide and target architecture, **not a claim that every technology is already implemented**.
 
 ## Mission
 

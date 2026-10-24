@@ -1,122 +1,55 @@
-# Module 18 — Disaster Recovery and Chaos Engineering
+# Module 18 — Disaster Recovery And Chaos Engineering
 
-**Status:** Not started  
-**Scope:** Backups, restore tests, RPO/RTO, fault injection and resilience  
-**Outcome:** Back up and restore a disposable Todo SQLite database copy.
+**Scope:** Recovery point and time objectives.  
+**Status:** Guided learning; verify evidence before marking complete.
 
-> This handbook is a **guided curriculum**. Example commands and future architecture are not proof that features exist in the current branch. Inspect repository code and dependencies before execution.
+## Why it matters
 
-## Why this matters to an SRE/DevOps Architect
+This module connects the running Todo application with **Disaster Recovery And Chaos Engineering**. Begin with a dependency-free simulation, then investigate the actual application or local infrastructure. A simulated result is not evidence of a deployed production capability.
 
-An architect must be able to explain the user-facing behavior, identify the operational boundary where it can fail, and justify design decisions under reliability, security, cost, and complexity constraints. This module practices those skills using the Todo application rather than disconnected toy systems.
+## Prerequisites
 
-## Prerequisites and environment
+- Python 3, Git, Todo repository checked out on the intended branch.
+- Read [environment setup](../../labs/ENVIRONMENT_SETUP.md) and [architecture baseline](../../architecture/CURRENT_AND_TARGET.md).
+- Optional infrastructure tools are introduced only when their lessons require them.
 
-- Clone and check out the **active Todo learning branch**; use `git status --short` before modifying anything.
-- Read [environment setup](../../labs/ENVIRONMENT_SETUP.md) and the [architecture baseline](../../architecture/CURRENT_AND_TARGET.md).
-- Confirm the actual source files and API routes; do not assume a future service is already implemented.
-- Keep experimental code in `tutorials/` or a disposable working directory until a spec-driven implementation PR is approved.
+## Baseline lab — executable
 
-## Lessons
-
-| Lesson | Topic | Evidence to collect |
-|---|---|---|
-| 18.01 | Backup versus replication | Explanation, observed output, and one failure mode |
-| 18.02 | RPO and RTO definitions | Explanation, observed output, and one failure mode |
-| 18.03 | SQLite consistent backup practices | Explanation, observed output, and one failure mode |
-| 18.04 | Restore verification | Explanation, observed output, and one failure mode |
-| 18.05 | Failure modes and blast radius | Explanation, observed output, and one failure mode |
-| 18.06 | Dependency mapping | Explanation, observed output, and one failure mode |
-| 18.07 | Fault-injection hypotheses | Explanation, observed output, and one failure mode |
-| 18.08 | Graceful shutdown and recovery | Explanation, observed output, and one failure mode |
-| 18.09 | Disaster runbooks | Explanation, observed output, and one failure mode |
-| 18.10 | Game days and incident learning | Explanation, observed output, and one failure mode |
-
-## Lesson method — use for every row above
-
-**1. Explain.** Define the topic and what problem it solves. State which guarantees it does *not* provide.  
-**2. Trace.** Find the actual relevant Todo source/configuration and sketch the path from user action to dependency.  
-**3. Inspect.** Record the command or browser observation proving the current behavior.  
-**4. Experiment.** Make one small reversible change or run a disposable simulation.  
-**5. Break safely.** Introduce one bounded failure and collect symptoms, logs, and status codes.  
-**6. Decide.** Compare at least two designs using reliability, operational burden, security, and cost.  
-**7. Record.** Use the lab template, update the learning log, and capture an ADR for a consequential decision.
-
-## Architecture reasoning exercise
-
-**Scenario:** {outcome}
-
-Draw a diagram showing the **client**, **component under study**, **external dependencies**, **stateful data**, and **failure boundary**. Mark which components can be restarted independently and which data must survive restarts.
-
-Questions to answer before implementation:
-
-1. What is the user-visible success criterion?
-2. Which dependency failure can break it?
-3. What evidence distinguishes application failure from network or configuration failure?
-4. Which behavior should be synchronous, asynchronous, retried, or rejected?
-5. What would you measure in production, and what is the rollback strategy?
-
-## Guided hands-on lab — baseline
-
-**Goal:** {outcome}
-
-**Run from the Todo repository root unless a command changes directories.** Check your working tree and ensure disposable resources are used.
+From the Todo repository root:
 
 ```bash
-{commands}
+pwd
+git status --short
+python3 tutorials/sre-devops-architect-handbook/labs/module-experiments/module-18.py
 ```
 
-### Observe
+**Expected:** A successful baseline observation plus a bounded failure/recovery demonstration for **Recovery point and time objectives**. The experiment does not modify Todo application code. A `SKIP` line means a prerequisite is absent; do not report the corresponding infrastructure as tested.
 
-- Capture process/HTTP/test output or the diagram produced by the lab.
-- Note the difference between **expected behavior** and **observed behavior**.
-- Record the current git branch and relevant file paths.
-- Redact tokens, personal data, cloud IDs, and secret values.
+**Failure:** The experiment includes a labeled failure case. Explain the symptom, scope, and recovery; for real infrastructure, do not induce outages without an approved disposable environment.
 
-### Failure-injection lab
+## Lessons and exercises
 
-{failure}
+| Lesson | Focus | Executable foundation |
+|---|---|---|
+| [18.01-backup-versus-replication](lessons/18.01-backup-versus-replication.md) | Backup versus replication | Run `python3 tutorials/sre-devops-architect-handbook/labs/module-experiments/module-18.py` and answer topic questions |
+| [18.02-rpo-and-rto-definitions](lessons/18.02-rpo-and-rto-definitions.md) | RPO and RTO definitions | Run `python3 tutorials/sre-devops-architect-handbook/labs/module-experiments/module-18.py` and answer topic questions |
+| [18.03-sqlite-consistent-backup-practices](lessons/18.03-sqlite-consistent-backup-practices.md) | SQLite consistent backup practices | Run `python3 tutorials/sre-devops-architect-handbook/labs/module-experiments/module-18.py` and answer topic questions |
+| [18.04-restore-verification](lessons/18.04-restore-verification.md) | Restore verification | Run `python3 tutorials/sre-devops-architect-handbook/labs/module-experiments/module-18.py` and answer topic questions |
+| [18.05-failure-modes-and-blast-radius](lessons/18.05-failure-modes-and-blast-radius.md) | Failure modes and blast radius | Run `python3 tutorials/sre-devops-architect-handbook/labs/module-experiments/module-18.py` and answer topic questions |
+| [18.06-dependency-mapping](lessons/18.06-dependency-mapping.md) | Dependency mapping | Run `python3 tutorials/sre-devops-architect-handbook/labs/module-experiments/module-18.py` and answer topic questions |
+| [18.07-fault-injection-hypotheses](lessons/18.07-fault-injection-hypotheses.md) | Fault-injection hypotheses | Run `python3 tutorials/sre-devops-architect-handbook/labs/module-experiments/module-18.py` and answer topic questions |
+| [18.08-graceful-shutdown-and-recovery](lessons/18.08-graceful-shutdown-and-recovery.md) | Graceful shutdown and recovery | Run `python3 tutorials/sre-devops-architect-handbook/labs/module-experiments/module-18.py` and answer topic questions |
+| [18.09-disaster-runbooks](lessons/18.09-disaster-runbooks.md) | Disaster runbooks | Run `python3 tutorials/sre-devops-architect-handbook/labs/module-experiments/module-18.py` and answer topic questions |
+| [18.10-game-days-and-incident-learning](lessons/18.10-game-days-and-incident-learning.md) | Game days and incident learning | Run `python3 tutorials/sre-devops-architect-handbook/labs/module-experiments/module-18.py` and answer topic questions |
 
-**Recovery:** Undo only your own disposable changes, restore the service, rerun the healthy-path check, and record whether the outcome returned to baseline.
+## Production application exercise
 
-### Expected learning outcome
+1. Inspect relevant current Todo files and record exact paths; use the real source as the authority.
+2. Draw a component diagram showing request path, state boundary, and failure domain.
+3. State which features exist now and which are only proposed.
+4. Create a small spec and ADR before changing Todo; validate with CI and a rollback plan.
+5. Add evidence to [learning log](../../progress/LEARNING_LOG.md).
 
-{outcome}
+## Completion gate
 
-## Development → DevOps → Architecture connection
-
-| Lens | Questions to answer |
-|---|---|
-| Development | Which functions, contracts, and tests implement this behavior? |
-| DevOps | Which process, configuration, network path, artifact, or automation operates it? |
-| SRE | What breaks, how is it detected, and how quickly can it recover? |
-| Architecture | What alternatives exist, what trade-offs matter, and why is this design justified? |
-
-## Design caution
-
-**{caveat}**
-
-## Verification and exit criteria
-
-- [ ] Explain all lesson topics in your own words.
-- [ ] Show the relevant actual code/configuration or clearly label a hypothetical design.
-- [ ] Complete the healthy-path lab with output.
-- [ ] Simulate and diagnose one reversible failure.
-- [ ] Restore service and verify recovery.
-- [ ] Document one trade-off and one security consideration.
-- [ ] Update `progress/LEARNING_LOG.md` with evidence and next lesson.
-
-## Suggested SDD deliverable
-
-If this module results in a Todo feature change, prepare a **small** feature specification, implementation plan, tasks, contract changes, automated tests, and rollback notes. Use existing `.specify/` conventions. Do not automatically install or deploy the technologies described in this handbook.
-
-## Tutor handoff prompt
-
-```text
-Read tutorials/sre-devops-architect-handbook/modules/{i:02}-{slug}/README.md
-and inspect the actual Todo repository on my current branch.
-Resume at Lesson {i:02}.01 (or the next incomplete lesson in progress/LEARNING_LOG.md).
-Teach one lesson only: concept, real code, architecture, commands, safe failure lab,
-expected observations, and a brief check for understanding. Wait for my results.
-Do not assume unimplemented infrastructure exists.
-```
+A module is complete only after its individual topic questions are answered and at least one actual Todo-related lab has independently verified evidence. Running the common module experiment alone does **not** complete all lessons.
