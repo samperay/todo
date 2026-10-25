@@ -1,0 +1,49 @@
+:root {
+  color: #1c1917;
+  background: #fafaf9;
+  font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  line-height: 1.5;
+}
+
+body {
+  margin: 0;
+}
+
+main {
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: 2rem 1.25rem;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+form {
+  display: grid;
+  gap: 0.75rem;
+}
+
+label {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.todo-list {
+  list-style: none;
+  margin: 1.5rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 1rem;
+}
+
+.todo-item {
+  padding-top: 1rem;
+  border-top: 1px solid #d6d3d1;
+}
+
+.todo-item h2 {
+  margin: 0 0 0.25rem;
+  font-size: 1.25rem;
+}
